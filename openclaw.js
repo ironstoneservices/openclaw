@@ -1,10 +1,10 @@
-import 'dotenv/config';
+import { createRequire } from 'module'; const require = createRequire(import.meta.url); require('dotenv').config();
 import fetch from 'node-fetch';
 import cron from 'node-cron';
 
 const CONFIG = {
   telegram: { token: process.env.TELEGRAM_BOT_TOKEN, chatId: process.env.TELEGRAM_CHAT_ID },
-  groq: { apiKey: process.env.GROQ_API_KEY, model: 'llama3-8b-8192' },
+  groq: { apiKey: process.env.GROQ_API_KEY, model: 'llama-3.1-8b-instant' },
   google: { apiKey: process.env.GOOGLE_MAPS_API_KEY },
   sam: { apiKey: process.env.SAM_API_KEY || null, baseUrl: 'https://api.sam.gov/opportunities/v2/search' },
   ironstone: {
