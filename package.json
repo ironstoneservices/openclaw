@@ -1,0 +1,20 @@
+{
+  "name": "openclaw",
+  "version": "1.0.0",
+  "description": "Ironstone Services LLC — Federal Contract Intelligence System",
+  "main": "openclaw.js",
+  "type": "module",
+  "scripts": {
+    "test": "node openclaw.js --test",
+    "start": "node openclaw.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-cron": "^3.0.3",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true
+}
