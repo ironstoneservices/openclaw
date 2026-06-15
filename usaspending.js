@@ -118,7 +118,7 @@ function formatContract(c) {
     `${(c['Description'] || 'Federal Contract').substring(0, 70)}`,
     `Incumbent: ${c['Recipient Name'] || 'Unknown'}`,
     `Location: ${c['Place of Performance City Name'] || ''}, ${c['Place of Performance State Code'] || ''}`,
-    `Value: ${amount} | NAICS: ${c['NAICS Code'] || 'N/A'}`,
+    `Value: ${amount} | NAICS: ${c['naics_code'] || c['NAICS Code'] || 'N/A' || 'N/A'}`,
     `Set-Aside: ${c['Type of Set Aside'] || 'None'}`,
     `Period: ${c['Start Date'] || '?'} → ${c['End Date'] || '?'} (${daysLabel})`,
     `Agency: ${c['Awarding Sub Agency'] || c['Awarding Agency'] || 'Unknown'}`,
@@ -207,5 +207,7 @@ async function main() {
     for (const name of WATCH_LIST) { await incumbentDeepDive(name, dryRun); await sleep(2000); }
   }
 }
+
+export { scanContracts, incumbentDeepDive };
 
 main().catch(err => { console.error('💥 Crashed:', err); process.exit(1); });
