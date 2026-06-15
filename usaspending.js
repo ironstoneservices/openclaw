@@ -115,7 +115,7 @@ function formatContract(c) {
   const amount = c['Award Amount'] ? `$${Number(c['Award Amount']).toLocaleString()}` : 'TBD';
   return [
     `🎯 RE-COMPETE TARGET`,
-    `${(c['Description'] || 'Federal Contract').substring(0, 70)}`,
+    `${c['Description'] || 'Federal Contract'}`,
     `Incumbent: ${c['Recipient Name'] || 'Unknown'}`,
     `Location: ${c['Place of Performance City Name'] || ''}, ${c['Place of Performance State Code'] || ''}`,
     `Value: ${amount} | NAICS: ${c['naics_code'] || c['NAICS Code'] || 'N/A' || 'N/A'}`,
@@ -127,6 +127,14 @@ function formatContract(c) {
 }
 
 async function scanContracts(dryRun = false) {
+  const seenFile = './data/seen_awards.json';
+  let persistentSeen = new Set();
+  try {
+    if (fs.existsSync(seenFile)) {
+      const saved = JSON.parse(fs.readFileSync(seenFile, 'utf8'));
+      persistentSeen = new Set(saved);
+    }
+  } catch(e) { console.log('Starting fresh seen list.'); }
   console.log(`\n🦅 USAspending Scan — ${new Date().toLocaleString()}\n`);
   const allResults = [];
   const seen = new Set();
@@ -150,6 +158,12 @@ async function scanContracts(dryRun = false) {
   }).sort((a, b) => new Date(a['End Date']) - new Date(b['End Date']));
 
   console.log(`\n📋 Total contracts pulled: ${allResults.length}`);
+  const newTargets = dryRun ? targets : targets.filter(c => c['Award ID'] && !persistentSeen.has(c['Award ID']));
+  if (!dryRun) {
+    const allIds = [...persistentSeen, ...targets.map(c => c['Award ID']).filter(Boolean)];
+    fs.mkdirSync('./data', { recursive: true });
+    fs.writeFileSync(seenFile, JSON.stringify([...new Set(allIds)], null, 2));
+  }
   console.log(`🎯 Re-compete targets (expiring -6mo to +18mo): ${targets.length}\n`);
 
   if (targets.length === 0) {
@@ -157,7 +171,7 @@ async function scanContracts(dryRun = false) {
     return [];
   }
 
-  for (const c of targets.slice(0, 15)) {
+  for (const c of (dryRun ? targets : newTargets).slice(0, 15)) {
     const msg = formatContract(c);
     console.log(msg + '\n' + '─'.repeat(60));
     if (!dryRun) { await sendTelegram(msg); await sleep(1500); }
