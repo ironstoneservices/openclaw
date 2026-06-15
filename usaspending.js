@@ -5,7 +5,7 @@ const TELEGRAM_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
 const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
 const CONFIG = {
-  naicsCodes: ['561720', '561730', '562111', '561210', '561740', '561990', '238320'],
+  naicsCodes: ['561720', '561730', '562111', '561210', '561740', '561790', '561990', '238320', '238390'],
   states: ['GA', 'SC', 'FL', 'TN'],
   baseUrl: 'https://api.usaspending.gov/api/v2',
 };
