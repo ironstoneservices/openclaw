@@ -101,11 +101,16 @@ async function processOpportunity(opp, dryRun=false) {
   }
 }
 
+import { scanContracts } from './usaspending.js';
+
 async function runCycle(options={}) {
   const { dryRun=false, reportOnly=false } = options;
   console.log(`\n🦅 OpenClaw cycle — ${new Date().toLocaleString()}`);
   const opportunities = await fetchSAMOpportunities();
   console.log(`Found ${opportunities.length} opportunities`);
+  // USAspending scan on every cycle
+  try { await scanContracts(dryRun); } catch(e) { console.error('USAspending error:', e.message); }
+
   if (reportOnly) {
     const now = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
     const report = `☀️ *IRONSTONE MORNING REPORT — ${now}*\n\n📋 New Opportunities: ${opportunities.length}\n\n`+(opportunities.length>0?opportunities.map((o,i)=>`${i+1}. ${o.title}\n   $${(o.award?.amount||0).toLocaleString()} | ${o.placeOfPerformanceCity}, ${o.placeOfPerformanceState} | Due: ${new Date(o.responseDeadLine).toLocaleDateString()}`).join('\n\n'):'No new opportunities in last 48 hours.')+'\n\n⚙️ Next check in 2 hours.\n_Ironstone OpenClaw v1.0_';
@@ -153,7 +158,7 @@ async function main() {
   if (args.includes('--dry-run')) { await runCycle({dryRun:true}); return; }
   if (args.includes('--report')) { await runCycle({reportOnly:true}); return; }
   console.log('🦅 OpenClaw LIVE — starting...');
-  await sendTelegram('🦅 *OpenClaw is online.* Monitoring SAM.gov every 2 hours. Morning reports at 7:00 AM.');
+  
   await runCycle();
   cron.schedule('0 */2 * * *', async () => { await runCycle(); });
   cron.schedule('0 7 * * *', async () => { await runCycle({reportOnly:true}); });
