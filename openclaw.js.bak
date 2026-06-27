@@ -55,19 +55,7 @@ function getMockOpportunities() {
   ];
 }
 
-const NAICS_TO_SEARCH = {
-  '561720':'janitorial cleaning service',
-  '561730':'landscaping lawn care service',
-  '562111':'waste removal hauling service',
-  '561210':'facility management service',
-  '561740':'carpet cleaning service',
-  '561990':'building maintenance service',
-  '238910':'site preparation contractor',
-  '561791':'swimming pool cleaning service',
-  '488490':'other support activities for road transportation',
-  '238990':'other specialty trade contractor',
-  '562910':'remediation services'
-};
+const NAICS_TO_SEARCH = { '561720':'janitorial cleaning service','561730':'landscaping lawn care service','562111':'waste removal hauling service','561210':'facility management service','561740':'carpet cleaning service','561990':'building maintenance service','238320':'commercial painting contractor' };
 
 async function findNearbySubcontractors(city, state, naicsCode) {
   const searchTerm = NAICS_TO_SEARCH[naicsCode] || 'facility services contractor';
@@ -114,7 +102,6 @@ async function processOpportunity(opp, dryRun=false) {
 }
 
 import { scanContracts } from './usaspending.js';
-import { runSAMScan } from './samclaw.js';
 
 async function runCycle(options={}) {
   const { dryRun=false, reportOnly=false } = options;
@@ -122,9 +109,7 @@ async function runCycle(options={}) {
   const opportunities = await fetchSAMOpportunities();
   console.log(`Found ${opportunities.length} opportunities`);
   // USAspending scan on every cycle
-  // USAspending disabled — socket errors
-  // try { await scanContracts(dryRun); } catch(e) { console.error('USAspending error:', e.message); }
-  await runSAMScan();
+  try { await scanContracts(dryRun); } catch(e) { console.error('USAspending error:', e.message); }
 
   if (reportOnly) {
     const now = new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
