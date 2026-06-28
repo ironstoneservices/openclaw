@@ -1,0 +1,2112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IronWorks — Ironstone Operating System</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080E1A;
+  --surface:#0F1826;
+  --card:#141F2E;
+  --card2:#1A2840;
+  --gold:#F0B429;
+  --gold-dim:rgba(240,180,41,0.15);
+  --gold-border:rgba(240,180,41,0.25);
+  --teal:#0D9373;
+  --teal-dim:rgba(13,147,115,0.15);
+  --red:#E05252;
+  --red-dim:rgba(224,82,82,0.15);
+  --amber:#E09952;
+  --amber-dim:rgba(224,153,82,0.15);
+  --blue:#4A90D9;
+  --blue-dim:rgba(74,144,217,0.15);
+  --text:#E8EDF5;
+  --muted:#6B7E99;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(240,180,41,0.2);
+}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:13px}
+a{color:inherit;text-decoration:none}
+
+/* ── HEADER ── */
+.hdr{background:var(--surface);border-bottom:2px solid var(--gold);padding:0 24px;display:flex;align-items:center;gap:16px;height:52px;position:sticky;top:0;z-index:300}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--text);letter-spacing:4px}
+.logo span{color:var(--gold)}
+.logo-sub{font-size:9px;letter-spacing:3px;color:var(--gold);text-transform:uppercase;margin-top:-2px}
+.hdr-pills{display:flex;gap:8px;margin-left:auto;align-items:center}
+.pill{padding:3px 10px;border-radius:4px;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:600}
+.pill-green{background:rgba(13,147,115,0.15);border:1px solid rgba(13,147,115,0.3);color:#3DD6B0}
+.pill-gold{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold)}
+.pill-blue{background:var(--blue-dim);border:1px solid rgba(74,144,217,0.3);color:var(--blue)}
+.mode-toggle{display:flex;gap:0;border:1px solid var(--border2);border-radius:6px;overflow:hidden}
+.mode-btn{padding:5px 14px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .15s}
+.mode-btn.hunt.active{background:var(--gold);color:#080E1A}
+.mode-btn.execute.active{background:var(--teal);color:#fff}
+
+/* ── NAV TABS ── */
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 20px;gap:0;overflow-x:auto;scrollbar-width:none}
+.nav-bar::-webkit-scrollbar{display:none}
+.nav-tab{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;font-weight:600;color:var(--muted);padding:13px 16px;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;display:flex;align-items:center;gap:7px}
+.nav-tab:hover{color:var(--text)}
+.nav-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-tab .dot{width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0}
+
+/* ── LAYOUT ── */
+.page-body{padding:24px 28px;max-width:1280px}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ── TYPOGRAPHY ── */
+.sec-eye{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--text);letter-spacing:1px;margin-bottom:4px}
+.gold-rule{height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin:14px 0 22px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.card-gold{border-color:var(--gold-border)}
+.card-teal{border-color:rgba(13,147,115,0.25)}
+.card-red{border-color:rgba(224,82,82,0.3)}
+
+/* ── STAT ROW ── */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.stat-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--gold);letter-spacing:1px;line-height:1}
+.stat-sub{font-size:10px;color:var(--muted);margin-top:3px}
+
+/* ── ALERT BANNER ── */
+.alert-bar{display:flex;flex-direction:column;gap:8px;margin-bottom:22px}
+.alert{display:flex;align-items:center;gap:12px;padding:10px 16px;border-radius:8px;font-size:12px}
+.alert-red{background:var(--red-dim);border:1px solid rgba(224,82,82,0.3)}
+.alert-amber{background:var(--amber-dim);border:1px solid rgba(224,153,82,0.3)}
+.alert-gold{background:var(--gold-dim);border:1px solid var(--gold-border)}
+.alert-teal{background:var(--teal-dim);border:1px solid rgba(13,147,115,0.3)}
+.alert-icon{font-size:14px;flex-shrink:0}
+.alert strong{font-weight:700;margin-right:4px}
+.alert-action{margin-left:auto;font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;color:var(--gold);cursor:pointer;white-space:nowrap}
+
+/* ── GRID LAYOUTS ── */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.grid-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px}
+
+/* ── BID CARDS ── */
+.bid-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;position:relative;overflow:hidden}
+.bid-strip{position:absolute;left:0;top:0;bottom:0;width:4px}
+.bid-strip-gold{background:var(--gold)}
+.bid-strip-red{background:var(--red)}
+.bid-strip-teal{background:var(--teal)}
+.bid-strip-amber{background:var(--amber)}
+.bid-card-body{padding-left:12px}
+.bid-tag{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.bid-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;line-height:1.3}
+.bid-agency{font-size:11px;color:var(--muted);margin-bottom:10px}
+.bid-meta{display:flex;gap:14px;flex-wrap:wrap}
+.bid-meta-item{font-size:11px;color:var(--muted)}
+.bid-meta-item strong{color:var(--text);font-weight:600}
+.bid-actions{display:flex;gap:8px;margin-top:12px}
+.btn{padding:7px 14px;border-radius:6px;font-size:11px;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;transition:all .15s}
+.btn-gold{background:var(--gold);color:#080E1A}
+.btn-gold:hover{background:#FFD060}
+.btn-ghost{background:transparent;border:1px solid var(--border2);color:var(--gold)}
+.btn-ghost:hover{background:var(--gold-dim)}
+.btn-teal{background:var(--teal);color:#fff}
+.btn-teal:hover{background:#10B893}
+.btn-red{background:var(--red);color:#fff}
+.btn-sm{padding:5px 10px;font-size:10px}
+
+/* ── CONTACT ROW ── */
+.contact-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
+.contact-row:last-child{border-bottom:none}
+.contact-avatar{width:34px;height:34px;border-radius:50%;background:var(--gold-dim);border:1px solid var(--gold-border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold);flex-shrink:0}
+.contact-name{font-size:13px;font-weight:600}
+.contact-agency{font-size:11px;color:var(--muted)}
+.contact-phone{margin-left:auto;font-size:13px;font-weight:600;color:var(--gold)}
+.contact-phone a{color:var(--gold)}
+.status-badge{font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:3px}
+.s-warm{background:rgba(13,147,115,0.15);color:#3DD6B0;border:1px solid rgba(13,147,115,0.3)}
+.s-build{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border)}
+.s-cold{background:rgba(255,255,255,0.05);color:var(--muted);border:1px solid var(--border)}
+
+/* ── SUB BENCH ── */
+.sub-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.sub-header{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.sub-grade{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;flex-shrink:0}
+.grade-a{background:rgba(13,147,115,0.2);color:#3DD6B0;border:1px solid rgba(13,147,115,0.3)}
+.grade-b{background:var(--gold-dim);color:var(--gold);border:1px solid var(--gold-border)}
+.sub-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border);font-size:11px}
+.sub-row:last-child{border-bottom:none}
+.sub-key{color:var(--muted)}
+.sub-val{color:var(--text);font-weight:500}
+
+/* ── UPGRADE WALL ── */
+.upgrade-wall{background:var(--card);border:1px solid var(--gold-border);border-radius:12px;padding:40px;text-align:center;position:relative;overflow:hidden}
+.upgrade-wall::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(240,180,41,0.08),transparent 70%);pointer-events:none}
+.upgrade-lock{font-size:40px;margin-bottom:16px}
+.upgrade-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;color:var(--gold);margin-bottom:8px}
+.upgrade-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.upgrade-tiers{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.tier-card{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:20px 24px;min-width:180px;text-align:center;cursor:pointer;transition:all .2s}
+.tier-card:hover{border-color:var(--gold-border);transform:translateY(-2px)}
+.tier-card.featured{border-color:var(--gold);background:rgba(240,180,41,0.05)}
+.tier-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--text);margin-bottom:4px}
+.tier-price{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--gold);letter-spacing:1px}
+.tier-period{font-size:10px;color:var(--muted);margin-bottom:12px}
+.tier-features{text-align:left;font-size:11px;color:var(--muted);line-height:1.8}
+.tier-features li{list-style:none;padding-left:14px;position:relative}
+.tier-features li::before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
+.upgrade-cta{display:inline-block;margin-top:24px;padding:12px 32px;background:var(--gold);color:#080E1A;border-radius:8px;font-weight:700;font-size:13px;letter-spacing:1px;cursor:pointer;border:none}
+
+/* ── DISPATCH ── */
+.dispatch-job{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.dispatch-header{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.dispatch-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.dispatch-title{font-size:14px;font-weight:600}
+.dispatch-loc{font-size:11px;color:var(--muted);margin-top:2px}
+.checklist{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.check-item{display:flex;align-items:flex-start;gap:10px;font-size:12px;padding:8px 12px;background:var(--card2);border-radius:6px}
+.check-box{width:16px;height:16px;border-radius:4px;border:2px solid var(--border2);flex-shrink:0;margin-top:1px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.check-box.checked{background:var(--teal);border-color:var(--teal);color:#fff;font-size:10px}
+.compliance-row{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:6px;font-size:12px;margin-top:8px}
+.comp-pass{background:rgba(13,147,115,0.12);border:1px solid rgba(13,147,115,0.25);color:#3DD6B0}
+.comp-fail{background:var(--red-dim);border:1px solid rgba(224,82,82,0.3);color:var(--red)}
+.comp-warn{background:var(--amber-dim);border:1px solid rgba(224,153,82,0.3);color:var(--amber)}
+.gps-bar{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card2);border-radius:8px;margin-top:10px;font-size:12px}
+.gps-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.gps-live{background:var(--teal);box-shadow:0 0 6px var(--teal)}
+.gps-pending{background:var(--amber)}
+.gps-offline{background:var(--muted)}
+
+/* ── BID BUILDER ── */
+.bb-form{display:flex;flex-direction:column;gap:16px}
+.bb-field{display:flex;flex-direction:column;gap:6px}
+.bb-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);font-weight:600}
+.bb-input{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;transition:border .15s}
+.bb-input:focus{border-color:var(--gold-border)}
+.bb-select{background:var(--card2);border:1px solid var(--border);border-radius:7px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'Inter',sans-serif;outline:none;appearance:none}
+.bb-result{background:var(--card2);border:1px solid var(--gold-border);border-radius:10px;padding:20px}
+.bb-result-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:13px}
+.bb-result-row:last-child{border-bottom:none}
+.bb-result-key{color:var(--muted)}
+.bb-result-val{font-weight:600;color:var(--text)}
+.bb-total-row{display:flex;justify-content:space-between;padding:12px 0;font-size:18px;font-weight:700}
+.bb-total-val{color:var(--gold)}
+
+/* ── COMPLIANCE ── */
+.compliance-section{margin-bottom:20px}
+.wd-table{width:100%;border-collapse:collapse;font-size:12px}
+.wd-table th{text-align:left;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--border)}
+.wd-table td{padding:9px 12px;border-bottom:1px solid var(--border)}
+.wd-table tr:last-child td{border-bottom:none}
+.wd-table tr:hover td{background:var(--card2)}
+.flag-red{color:var(--red);font-weight:600}
+.flag-pass{color:#3DD6B0}
+
+/* ── BAXTER BOARD ── */
+.baxter-header{background:linear-gradient(135deg,var(--card) 0%,rgba(13,147,115,0.1) 100%);border:1px solid rgba(13,147,115,0.25);border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px}
+.baxter-avatar{width:52px;height:52px;border-radius:50%;background:rgba(13,147,115,0.2);border:2px solid var(--teal);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--teal)}
+.today-card{background:var(--card2);border:1px solid rgba(13,147,115,0.25);border-radius:8px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:flex-start;gap:12px}
+.today-time{font-size:10px;letter-spacing:1px;color:var(--teal);font-weight:700;min-width:50px;padding-top:2px}
+.today-text{font-size:13px;color:var(--text);line-height:1.5}
+.today-text .sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* ── INTEL ── */
+.intel-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin-bottom:12px}
+.intel-type{font-size:9px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:6px}
+.intel-incumbent{color:var(--amber)}
+.intel-recompete{color:var(--blue)}
+.intel-title{font-size:14px;font-weight:600;margin-bottom:4px}
+.intel-row{display:flex;gap:16px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.intel-row strong{color:var(--text)}
+.intel-action{margin-top:10px;display:flex;gap:8px}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--surface)}
+::-webkit-scrollbar-thumb{background:var(--card2);border-radius:3px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.pkg-tab-panel{animation:fadeIn .2s ease}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:32px;margin-bottom:12px}
+.empty-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:12px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .stat-row{grid-template-columns:repeat(3,1fr)}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .stat-row{grid-template-columns:1fr 1fr}
+  .page-body{padding:16px}
+  .upgrade-tiers{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div>
+    <div class="logo">IRON<span>WORKS</span></div>
+    <div class="logo-sub">Ironstone Operating System</div>
+  </div>
+  <div class="hdr-pills">
+    <span class="pill pill-green">SAM ACTIVE</span>
+    <span class="pill pill-gold">UEI: SPKKEMJHT2Y5</span>
+    <span class="pill pill-blue">HUBZone Pending</span>
+  </div>
+  <div class="mode-toggle" style="margin-left:16px">
+    <button class="mode-btn hunt active" onclick="setMode('hunt',this)">🎯 Hunt</button>
+    <button class="mode-btn execute" onclick="setMode('execute',this)">⚙️ Execute</button>
+  </div>
+</div>
+
+<!-- NAV TABS -->
+<div class="nav-bar" id="navBar">
+  <div class="nav-tab active" onclick="showTab('command',this)">⚡ Command</div>
+  <div class="nav-tab" onclick="showTab('bids',this)">📋 Bids <span class="dot"></span></div>
+  <div class="nav-tab" onclick="showTab('bidbuilder',this)">🏗️ Bid Builder</div>
+  <div class="nav-tab" onclick="showTab('corolodex',this)">📞 CO Rolodex</div>
+  <div class="nav-tab" onclick="showTab('intel',this)">🔍 Intel</div>
+  <div class="nav-tab" onclick="showTab('subbench',this)">👷 Sub Bench</div>
+  <div class="nav-tab" onclick="showTab('dispatch',this)">🚛 Dispatch</div>
+  <div class="nav-tab" onclick="showTab('compliance',this)">⚖️ Compliance</div>
+  <div class="nav-tab" onclick="showTab('baxter',this)">🔧 Baxter Board</div>
+  <div class="nav-tab" onclick="showTab('contracts',this)">📄 Contracts</div>
+  <div class="nav-tab" onclick="showTab('financials',this)">💰 Financials</div>
+  <div class="nav-tab" onclick="showTab('cpars',this)">⭐ CPARS</div>
+</div>
+
+<div class="page-body">
+
+<!-- ══════════════════════════════════════════════
+     TAB 1 — COMMAND
+══════════════════════════════════════════════ -->
+<div class="tab-panel active" id="tab-command">
+  <!-- Alerts -->
+  <div class="alert-bar">
+    <div class="alert alert-red">
+      <span class="alert-icon">🔴</span>
+      <span><strong>ACTION REQUIRED:</strong> Reps &amp; Certs not complete — do this with Baxter before any bid submission</span>
+      <span class="alert-action">→ SAM.gov</span>
+    </div>
+    <div class="alert alert-red">
+      <span class="alert-icon">🔴</span>
+      <span><strong>HUBZone:</strong> Same-day rule triggered June 23 — apply NOW at certify.sba.gov</span>
+      <span class="alert-action">→ certify.sba.gov</span>
+    </div>
+    <div class="alert alert-amber">
+      <span class="alert-icon">🟡</span>
+      <span><strong>BID DUE July 2:</strong> Cherokee NF Ocoee Janitorial — 4 days out — final price check needed</span>
+      <span class="alert-action">→ Open Bid</span>
+    </div>
+    <div class="alert alert-gold">
+      <span class="alert-icon">🟠</span>
+      <span><strong>Google Workspace:</strong> MX/SPF configured — call 1-877-355-5787 to activate</span>
+      <span class="alert-action">→ Note</span>
+    </div>
+    <div class="alert alert-teal">
+      <span class="alert-icon">🟢</span>
+      <span><strong>SAM.gov ACTIVE</strong> — June 23, 2026 · CAGE: 21K98 · UEI: SPKKEMJHT2Y5</span>
+    </div>
+  </div>
+
+  <!-- Stat Row -->
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-label">Active Bids</div>
+      <div class="stat-val">3</div>
+      <div class="stat-sub">Ocoee · Mount Dora · NCA Inscription</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Next Due Date</div>
+      <div class="stat-val">Jul 2</div>
+      <div class="stat-sub">Ocoee Janitorial</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Pipeline Value</div>
+      <div class="stat-val">$950K</div>
+      <div class="stat-sub">Estimated 5-yr value</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Active Contracts</div>
+      <div class="stat-val">0</div>
+      <div class="stat-sub">First win pending</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Sub Bench</div>
+      <div class="stat-val">4</div>
+      <div class="stat-sub">Vetted &amp; ready</div>
+    </div>
+  </div>
+
+  <!-- Two-column layout -->
+  <div class="grid-2" style="gap:20px">
+    <!-- Active Bids -->
+    <div>
+      <div class="sec-eye">Priority Queue</div>
+      <div class="sec-title">ACTIVE BIDS</div>
+      <div class="gold-rule"></div>
+
+      <div class="bid-card" style="margin-bottom:12px">
+        <div class="bid-strip bid-strip-red"></div>
+        <div class="bid-card-body">
+          <div class="bid-tag" style="color:var(--red)">🔴 DUE IN 4 DAYS</div>
+          <div class="bid-title">Cherokee NF Ocoee Ranger District Janitorial</div>
+          <div class="bid-agency">USDA Forest Service · Solicitation 12444026Q0100</div>
+          <div class="bid-meta">
+            <div class="bid-meta-item"><strong>Due:</strong> July 2, 2026</div>
+            <div class="bid-meta-item"><strong>Target:</strong> ~$14,900</div>
+            <div class="bid-meta-item"><strong>CO:</strong> Melody Flores</div>
+          </div>
+          <div class="bid-actions">
+            <button class="btn btn-gold btn-sm">Open Bid Package</button>
+            <button class="btn btn-ghost btn-sm">View CO</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bid-card" style="margin-bottom:12px">
+        <div class="bid-strip bid-strip-amber"></div>
+        <div class="bid-card-body">
+          <div class="bid-tag" style="color:var(--amber)">🟡 DUE JUL 15</div>
+          <div class="bid-title">Mount Dora APHIS Janitorial</div>
+          <div class="bid-agency">USDA APHIS · 12639526Q0159</div>
+          <div class="bid-meta">
+            <div class="bid-meta-item"><strong>Due:</strong> July 15, 2026</div>
+            <div class="bid-meta-item"><strong>Status:</strong> SOW Not Pulled</div>
+          </div>
+          <div class="bid-actions">
+            <button class="btn btn-ghost btn-sm">Pull SOW</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bid-card">
+        <div class="bid-strip bid-strip-gold"></div>
+        <div class="bid-card-body">
+          <div class="bid-tag" style="color:var(--gold)">🟠 DUE JUL 23</div>
+          <div class="bid-title">VA National Cemetery Inscription Services</div>
+          <div class="bid-agency">NCA 36C786 · Notice 36C78626Q0061</div>
+          <div class="bid-meta">
+            <div class="bid-meta-item"><strong>Due:</strong> July 23, 2026</div>
+            <div class="bid-meta-item"><strong>Value:</strong> ~$175–220K/yr</div>
+            <div class="bid-meta-item"><strong>CO:</strong> Weston Worsham</div>
+          </div>
+          <div class="bid-actions">
+            <button class="btn btn-ghost btn-sm">Re-evaluate</button>
+            <button class="btn btn-ghost btn-sm">View CO</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column -->
+    <div>
+      <!-- CO Touchpoints -->
+      <div class="sec-eye">Relationship Pipeline</div>
+      <div class="sec-title">CO TOUCHPOINTS</div>
+      <div class="gold-rule"></div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="contact-row">
+          <div class="contact-avatar">WW</div>
+          <div>
+            <div class="contact-name">Weston Worsham</div>
+            <div class="contact-agency">NCA 36C786 · Cemeteries</div>
+          </div>
+          <span class="status-badge s-build">Building</span>
+          <div class="contact-phone"><a href="tel:6292590295">(629) 259-0295</a></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar">MF</div>
+          <div>
+            <div class="contact-name">Melody Flores</div>
+            <div class="contact-agency">USDA Forest Service · Ocoee</div>
+          </div>
+          <span class="status-badge s-build">Active Bid</span>
+          <div class="contact-phone"><a href="tel:6063715634">(606) 371-5634</a></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar">KK</div>
+          <div>
+            <div class="contact-name">Kurt Kramer</div>
+            <div class="contact-agency">VA NCO 8 · Carpet Cleaning</div>
+          </div>
+          <span class="status-badge s-cold">Queue</span>
+          <div class="contact-phone"><a href="tel:4076464278">(407) 646-4278</a></div>
+        </div>
+      </div>
+
+      <!-- Admin Tasks -->
+      <div class="sec-eye">Admin Queue</div>
+      <div class="sec-title">PENDING ACTIONS</div>
+      <div class="gold-rule"></div>
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="today-card" style="margin-bottom:0">
+            <div class="today-time" style="color:var(--red)">P1</div>
+            <div class="today-text">Reps &amp; Certs in SAM.gov <span class="sub">Brett + Baxter together — do not bid without this</span></div>
+          </div>
+          <div class="today-card" style="margin-bottom:0">
+            <div class="today-time" style="color:var(--red)">P2</div>
+            <div class="today-text">HUBZone application at certify.sba.gov <span class="sub">Same-day rule triggered · Baxter's address qualifies through 2028</span></div>
+          </div>
+          <div class="today-card" style="margin-bottom:0">
+            <div class="today-time" style="color:var(--amber)">P3</div>
+            <div class="today-text">Brett: add second SAM Entity Administrator <span class="sub">fsd.gov — before Baxter's letter deadline Aug 22</span></div>
+          </div>
+          <div class="today-card" style="margin-bottom:0">
+            <div class="today-time" style="color:var(--amber)">P4</div>
+            <div class="today-text">Contact APEX Accelerators <span class="sub">GT APEX · <a href="tel:7707183981" style="color:var(--gold)">(770) 718-3981</a> · 75 5th St NW Suite 300 Atlanta</span></div>
+          </div>
+          <div class="today-card" style="margin-bottom:0">
+            <div class="today-time" style="color:var(--blue)">P5</div>
+            <div class="today-text">Google Workspace activation <span class="sub">Call <a href="tel:18773555787" style="color:var(--gold)">1-877-355-5787</a> · then update .env + pm2 restart</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 2 — BIDS
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-bids">
+  <div class="sec-eye">Bid Management</div>
+  <div class="sec-title">ALL ACTIVE BIDS</div>
+  <div class="gold-rule"></div>
+
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn btn-gold btn-sm">All</button>
+    <button class="btn btn-ghost btn-sm">Janitorial</button>
+    <button class="btn btn-ghost btn-sm">Grounds</button>
+    <button class="btn btn-ghost btn-sm">Carpet</button>
+    <button class="btn btn-ghost btn-sm">Other</button>
+    <button class="btn btn-teal" style="margin-left:auto" onclick="showTab('bidbuilder',document.querySelector('[onclick*=bidbuilder]'))">+ New Bid</button>
+  </div>
+
+  <div class="bid-card" style="margin-bottom:12px">
+    <div class="bid-strip bid-strip-red"></div>
+    <div class="bid-card-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div class="bid-tag" style="color:var(--red)">🔴 DUE IN 4 DAYS · JANITORIAL · 561720</div>
+          <div class="bid-title">Cherokee NF Ocoee Ranger District — Janitorial Services</div>
+          <div class="bid-agency">USDA Forest Service · Solicitation: 12444026Q0100 · Total Small Business Set-Aside</div>
+          <div class="bid-meta" style="margin-top:8px">
+            <div class="bid-meta-item"><strong>Due:</strong> July 2, 2026</div>
+            <div class="bid-meta-item"><strong>Bid Price:</strong> ~$14,900 base year</div>
+            <div class="bid-meta-item"><strong>Margin Target:</strong> 25%</div>
+            <div class="bid-meta-item"><strong>Sub:</strong> Naturally Clean Janitorial</div>
+            <div class="bid-meta-item"><strong>CO:</strong> <a href="tel:6063715634" style="color:var(--gold)">Melody Flores (606) 371-5634</a></div>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold)">$14,900</div>
+          <div style="font-size:10px;color:var(--muted)">Base Year</div>
+        </div>
+      </div>
+      <div class="bid-actions" style="margin-top:14px">
+        <button class="btn btn-gold">Open Bid Package</button>
+        <button class="btn btn-ghost">Submission Email</button>
+        <button class="btn btn-ghost">CO Profile</button>
+        <button class="btn btn-ghost">SCA Calculator</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bid-card" style="margin-bottom:12px">
+    <div class="bid-strip bid-strip-amber"></div>
+    <div class="bid-card-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div class="bid-tag" style="color:var(--amber)">🟡 DUE JUL 15 · JANITORIAL · 561720</div>
+          <div class="bid-title">Mount Dora APHIS Janitorial</div>
+          <div class="bid-agency">USDA APHIS · 12639526Q0159 · FL market (+1% MFMP fee)</div>
+          <div class="bid-meta" style="margin-top:8px">
+            <div class="bid-meta-item"><strong>Due:</strong> July 15, 2026</div>
+            <div class="bid-meta-item"><strong>Status:</strong> SOW not yet pulled</div>
+            <div class="bid-meta-item" style="color:var(--amber)"><strong>⚠ FL 1% MFMP fee — build into price</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="bid-actions" style="margin-top:14px">
+        <button class="btn btn-gold">Pull SOW</button>
+        <button class="btn btn-ghost">Bid Builder →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bid-card" style="margin-bottom:12px">
+    <div class="bid-strip bid-strip-gold"></div>
+    <div class="bid-card-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div>
+          <div class="bid-tag" style="color:var(--gold)">🟠 DUE JUL 23 · INSCRIPTION · 561990 · EVALUATE</div>
+          <div class="bid-title">Georgia National Cemetery — Inscription Services</div>
+          <div class="bid-agency">NCA 36C786 · Notice 36C78626Q0061 · Total Small Business Set-Aside</div>
+          <div class="bid-meta" style="margin-top:8px">
+            <div class="bid-meta-item"><strong>Due:</strong> July 23, 2026</div>
+            <div class="bid-meta-item"><strong>Value:</strong> $175–220K/yr · 5-year</div>
+            <div class="bid-meta-item"><strong>Incumbent:</strong> BRP Sandblast (GONE from SAM)</div>
+            <div class="bid-meta-item"><strong>Sub Lead:</strong> Everlasting Granite — Gregg Craft</div>
+            <div class="bid-meta-item"><strong>CO:</strong> <a href="tel:6292590295" style="color:var(--gold)">Weston Worsham (629) 259-0295</a></div>
+          </div>
+          <div class="alert alert-amber" style="margin-top:12px">Decision: Walk away — re-evaluate with sub quotes in hand</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--gold)">$197K</div>
+          <div style="font-size:10px;color:var(--muted)">Est. Annual</div>
+        </div>
+      </div>
+      <div class="bid-actions" style="margin-top:14px">
+        <button class="btn btn-ghost">Contact Everlasting Granite</button>
+        <button class="btn btn-ghost">CO Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Practice bid — Orlando VA Carpet -->
+  <div class="bid-card card-teal" style="border:1px solid rgba(13,147,115,0.35)">
+    <div class="bid-strip bid-strip-teal"></div>
+    <div class="bid-card-body">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+        <div style="flex:1">
+          <div class="bid-tag" style="color:var(--teal)">🟢 PRACTICE BID · CARPET CLEANING · 561740 · FLORIDA</div>
+          <div class="bid-title">VA Orlando — Carpet Cleaning Re-compete</div>
+          <div class="bid-agency">VA NCO 8 · Contract 36C24825N0905 · Expires Aug 31, 2026 · Orlando, FL</div>
+
+          <!-- Key numbers -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0;background:var(--card2);border-radius:8px;padding:14px">
+            <div>
+              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Square Footage</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold)">330,000</div>
+              <div style="font-size:10px;color:var(--muted)">3 locations</div>
+            </div>
+            <div>
+              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">Practice Price</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold)">$205,500</div>
+              <div style="font-size:10px;color:var(--muted)">per year · 25% margin</div>
+            </div>
+            <div>
+              <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:4px">5-Year Value</div>
+              <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold)">$1.02M</div>
+              <div style="font-size:10px;color:var(--muted)">if all option years exercised</div>
+            </div>
+          </div>
+
+          <!-- Details grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;margin-bottom:14px">
+            <div style="background:var(--card2);border-radius:6px;padding:10px 12px">
+              <div style="color:var(--muted);font-size:10px;margin-bottom:4px">CONTRACTING OFFICER</div>
+              <div style="font-weight:600">Kurt Kramer</div>
+              <div style="margin-top:4px"><a href="tel:4076464278" style="color:var(--gold);font-size:14px;font-weight:700">(407) 646-4278</a></div>
+              <div style="margin-top:2px"><a href="mailto:kurt.kramer@va.gov" style="color:var(--gold);font-size:11px">kurt.kramer@va.gov</a></div>
+            </div>
+            <div style="background:var(--card2);border-radius:6px;padding:10px 12px">
+              <div style="color:var(--muted);font-size:10px;margin-bottom:4px">TOP SUB CANDIDATES</div>
+              <div style="font-weight:600">Cubix Inc. (MilliCare) — Top Pick</div>
+              <div style="color:var(--muted);margin-top:4px">American Facility Services</div>
+              <div style="color:var(--muted)">Clean Method Orlando</div>
+              <div style="color:var(--muted)">Mega Service Solutions</div>
+            </div>
+          </div>
+
+          <!-- SCA pre-fill info -->
+          <div style="background:rgba(13,147,115,0.08);border:1px solid rgba(13,147,115,0.2);border-radius:8px;padding:12px 14px;font-size:12px;margin-bottom:14px">
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);font-weight:700;margin-bottom:8px">BID BUILDER PRE-FILL VALUES</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;color:var(--muted)">
+              <div><strong style="color:var(--text)">NAICS:</strong> 561740</div>
+              <div><strong style="color:var(--text)">State:</strong> Florida (+1% MFMP)</div>
+              <div><strong style="color:var(--text)">Occ Code:</strong> 14045</div>
+              <div><strong style="color:var(--text)">WD Rate:</strong> ~$17.20/hr (Orange Co.)</div>
+              <div><strong style="color:var(--text)">H&amp;W:</strong> $5.36/hr</div>
+              <div><strong style="color:var(--text)">Target Margin:</strong> 25%</div>
+            </div>
+            <div style="margin-top:8px;color:var(--amber);font-size:11px">⚠ Verify current WD at WDOL.gov for Orange County, FL before any real submission</div>
+          </div>
+
+          <!-- Brett's edge -->
+          <div style="background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:8px;padding:10px 14px;font-size:12px;margin-bottom:14px">
+            <strong style="color:var(--gold)">Brett's Edge:</strong> <span style="color:var(--muted)">17 years Orlando experience · Grand Cypress Hotel contacts for sub referrals · Knows the market</span>
+          </div>
+
+          <div class="bid-actions">
+            <button class="btn btn-teal" onclick="loadOrlandoBid()">⚡ Load into Bid Builder</button>
+            <button class="btn btn-ghost">CO Profile</button>
+            <button class="btn btn-ghost">Sub Bench</button>
+          </div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--gold)">$205,500</div>
+          <div style="font-size:10px;color:var(--muted)">Practice Price / Year</div>
+          <div style="margin-top:8px;font-size:11px;color:var(--amber)">⚠ FL +1% MFMP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 3 — BID BUILDER (Brett's WOW moment)
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-bidbuilder">
+  <div class="sec-eye">5 minutes start to compliant price</div>
+  <div class="sec-title">BID BUILDER</div>
+  <div class="gold-rule"></div>
+
+  <div class="grid-2" style="align-items:start;gap:24px">
+    <!-- Left: Form -->
+    <div>
+      <div class="card card-gold">
+        <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px">📋 Contract Details</div>
+        <div class="bb-form">
+          <div class="bb-field">
+            <div class="bb-label">Contract Name / Solicitation #</div>
+            <input class="bb-input" type="text" placeholder="e.g. Ocoee Ranger District Janitorial" id="bb-name">
+          </div>
+          <div class="grid-2" style="gap:12px">
+            <div class="bb-field">
+              <div class="bb-label">NAICS Code</div>
+              <select class="bb-select" id="bb-naics" onchange="bbUpdateOccupation()">
+                <option value="561720">561720 — Janitorial</option>
+                <option value="561730">561730 — Grounds / Landscaping</option>
+                <option value="561740">561740 — Carpet Cleaning</option>
+                <option value="561990">561990 — Other Services</option>
+              </select>
+            </div>
+            <div class="bb-field">
+              <div class="bb-label">State</div>
+              <select class="bb-select" id="bb-state" onchange="bbCheckFlorida()">
+                <option value="GA">Georgia</option>
+                <option value="FL">Florida</option>
+                <option value="TN">Tennessee</option>
+                <option value="SC">South Carolina</option>
+                <option value="NC">North Carolina</option>
+                <option value="AL">Alabama</option>
+              </select>
+            </div>
+          </div>
+          <div class="bb-field">
+            <div class="bb-label">Occupation Code &amp; Title</div>
+            <input class="bb-input" type="text" id="bb-occupation" value="14041 — Janitor / Custodial Worker">
+          </div>
+          <div class="grid-2" style="gap:12px">
+            <div class="bb-field">
+              <div class="bb-label">SCA WD Rate / Hour ($)</div>
+              <input class="bb-input" type="number" step="0.01" placeholder="e.g. 18.50" id="bb-wdrate" oninput="bbCalc()">
+            </div>
+            <div class="bb-field">
+              <div class="bb-label">H&amp;W Fringe / Hour ($)</div>
+              <input class="bb-input" type="number" step="0.01" placeholder="e.g. 5.36" id="bb-hw" oninput="bbCalc()">
+            </div>
+          </div>
+          <div class="grid-2" style="gap:12px">
+            <div class="bb-field">
+              <div class="bb-label">Estimated Hours / Year</div>
+              <input class="bb-input" type="number" placeholder="e.g. 520" id="bb-hours" oninput="bbCalc()">
+            </div>
+            <div class="bb-field">
+              <div class="bb-label">Your Margin Target (%)</div>
+              <input class="bb-input" type="number" placeholder="25" id="bb-margin" value="25" oninput="bbCalc()">
+            </div>
+          </div>
+          <div class="bb-field">
+            <div class="bb-label">Sub Execution? (Pass-Through)</div>
+            <select class="bb-select" id="bb-subtype" onchange="bbCalc()">
+              <option value="own">Own crew / direct labor</option>
+              <option value="sub">Sub pass-through</option>
+            </select>
+          </div>
+          <div id="bb-fl-warning" style="display:none" class="alert alert-amber">
+            ⚠ Florida MFMP: 1% transaction fee added to bid price automatically
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Results -->
+    <div>
+      <div class="card card-gold" id="bb-results-card">
+        <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:16px">📊 SCA-Compliant Bid Calculation</div>
+        <div class="bb-result">
+          <div class="bb-result-row">
+            <span class="bb-result-key">Base Wage (WD Rate × Hours)</span>
+            <span class="bb-result-val" id="res-basewage">—</span>
+          </div>
+          <div class="bb-result-row">
+            <span class="bb-result-key">H&amp;W Fringe (Hours × Rate)</span>
+            <span class="bb-result-val" id="res-hw">—</span>
+          </div>
+          <div class="bb-result-row">
+            <span class="bb-result-key">Total SCA Labor Cost</span>
+            <span class="bb-result-val" id="res-labor">—</span>
+          </div>
+          <div class="bb-result-row">
+            <span class="bb-result-key">Overhead / G&amp;A (est. 12%)</span>
+            <span class="bb-result-val" id="res-overhead">—</span>
+          </div>
+          <div class="bb-result-row">
+            <span class="bb-result-key">Subtotal Before Margin</span>
+            <span class="bb-result-val" id="res-subtotal">—</span>
+          </div>
+          <div id="res-fl-row" class="bb-result-row" style="display:none">
+            <span class="bb-result-key" style="color:var(--amber)">Florida MFMP Fee (1%)</span>
+            <span class="bb-result-val" id="res-fl" style="color:var(--amber)">—</span>
+          </div>
+          <div class="bb-result-row">
+            <span class="bb-result-key">Margin Applied</span>
+            <span class="bb-result-val" id="res-margin-pct">—</span>
+          </div>
+          <div class="bb-total-row">
+            <span style="color:var(--text)">BID FLOOR PRICE</span>
+            <span class="bb-total-val" id="res-total">Enter data →</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-gold" onclick="bbCopy()">📋 Copy Bid Summary</button>
+          <button class="btn btn-ghost" onclick="bbReset()">Reset</button>
+        </div>
+
+        <div id="bb-summary-box" style="display:none;margin-top:16px;background:var(--card2);border-radius:8px;padding:14px;font-size:12px;color:var(--muted);white-space:pre-line;line-height:1.7"></div>
+      </div>
+
+      <!-- SCA Compliance Check -->
+      <div class="card" style="margin-top:16px">
+        <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;margin-bottom:12px">⚖️ Compliance Pre-Check</div>
+        <div class="compliance-row comp-pass" id="comp-wd">✓ WD Rate entered — SCA floor met</div>
+        <div class="compliance-row comp-pass" id="comp-hw">✓ H&amp;W fringe included</div>
+        <div class="compliance-row comp-pass" id="comp-margin">✓ Margin ≥15% (pass-through threshold)</div>
+        <div class="compliance-row comp-warn" id="comp-note">ℹ Own-crew contracts: target 25%+ margin to cover run-over risk</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ AI BID GENERATOR ══ -->
+  <div style="margin-top:28px">
+    <div style="height:1px;background:linear-gradient(90deg,var(--gold),transparent);margin-bottom:22px"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+      <div>
+        <div style="font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:4px">Powered by AI · IronWorks Intelligence</div>
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px">GENERATE FULL BID PACKAGE</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Complete bid in ~30 seconds — cover letter · technical approach · price schedule · past performance · CO email — ready to submit</div>
+      </div>
+      <button class="btn btn-gold" id="generateBtn" onclick="generateBidPackage()" style="padding:14px 28px;font-size:14px;letter-spacing:1px;white-space:nowrap">
+        ⚡ Generate Full Bid Package
+      </button>
+    </div>
+
+    <!-- Optional context fields -->
+    <div class="card card-gold" style="margin-bottom:16px">
+      <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:14px">📎 Optional — Paste Additional Context (SOW excerpt, special requirements, past performance details)</div>
+      <div class="grid-2" style="gap:12px">
+        <div class="bb-field">
+          <div class="bb-label">SOW Key Requirements (paste or type)</div>
+          <textarea class="bb-input" id="ai-sow" rows="3" placeholder="e.g. Contractor shall provide carpet cleaning services 2x per year at 3 VA locations in Orlando. Deep clean required in patient areas..." style="resize:vertical;font-family:'Inter',sans-serif"></textarea>
+        </div>
+        <div class="bb-field">
+          <div class="bb-label">Past Performance to Highlight</div>
+          <textarea class="bb-input" id="ai-pastperf" rows="3" placeholder="e.g. 17 years Orlando facility services experience. Grand Cypress Hotel carpet program. Cubix Inc. (MilliCare) as sub — 200+ federal carpet contracts..." style="resize:vertical;font-family:'Inter',sans-serif"></textarea>
+        </div>
+      </div>
+      <div class="grid-2" style="gap:12px;margin-top:12px">
+        <div class="bb-field">
+          <div class="bb-label">Primary Subcontractor</div>
+          <input class="bb-input" type="text" id="ai-sub" placeholder="e.g. Cubix Inc. (MilliCare) — Orlando, FL — carpet cleaning specialists">
+        </div>
+        <div class="bb-field">
+          <div class="bb-label">Set-Aside Type</div>
+          <select class="bb-select" id="ai-setaside">
+            <option value="Total Small Business">Total Small Business</option>
+            <option value="Unrestricted">Unrestricted / Full &amp; Open</option>
+            <option value="HUBZone">HUBZone Set-Aside</option>
+            <option value="8(a)">8(a) Set-Aside</option>
+            <option value="SDVOSB">SDVOSB Set-Aside</option>
+            <option value="WOSB">WOSB Set-Aside</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- Generation status -->
+    <div id="ai-status" style="display:none" class="alert alert-gold" style="margin-bottom:16px">
+      <span class="alert-icon" id="ai-status-icon">⚡</span>
+      <span id="ai-status-text">Initializing IronWorks AI...</span>
+      <div id="ai-spinner" style="margin-left:auto;width:16px;height:16px;border:2px solid var(--gold-border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite"></div>
+    </div>
+
+    <!-- Output panel -->
+    <div id="ai-output-panel" style="display:none">
+      <!-- Tab switcher for sections -->
+      <div style="display:flex;gap:0;border:1px solid var(--border2);border-radius:8px;overflow:hidden;margin-bottom:16px;flex-wrap:wrap">
+        <button class="pkg-tab-btn active" onclick="showPkgTab('email',this)" style="flex:1;padding:10px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;background:var(--gold);color:#080E1A;cursor:pointer;white-space:nowrap">📧 CO Email</button>
+        <button class="pkg-tab-btn" onclick="showPkgTab('technical',this)" style="flex:1;padding:10px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;background:var(--card2);color:var(--muted);cursor:pointer;white-space:nowrap">📋 Technical</button>
+        <button class="pkg-tab-btn" onclick="showPkgTab('price',this)" style="flex:1;padding:10px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;background:var(--card2);color:var(--muted);cursor:pointer;white-space:nowrap">💲 Price Schedule</button>
+        <button class="pkg-tab-btn" onclick="showPkgTab('pastperf',this)" style="flex:1;padding:10px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;background:var(--card2);color:var(--muted);cursor:pointer;white-space:nowrap">⭐ Past Perf</button>
+        <button class="pkg-tab-btn" onclick="showPkgTab('capability',this)" style="flex:1;padding:10px 8px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border:none;background:var(--card2);color:var(--muted);cursor:pointer;white-space:nowrap">🏆 Capability</button>
+      </div>
+
+      <div id="pkg-email" class="pkg-tab-panel" style="display:block">
+        <div class="card card-gold">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--gold);font-weight:700">📧 CO Cover Email — Ready to Send</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-gold btn-sm" onclick="copySection('pkg-email-content')">Copy</button>
+              <button class="btn btn-ghost btn-sm" onclick="regenerateSection('email')">↺ Regenerate</button>
+            </div>
+          </div>
+          <div id="pkg-email-content" style="background:var(--card2);border-radius:8px;padding:16px;font-size:13px;line-height:1.9;color:var(--text);min-height:120px"></div>
+        </div>
+      </div>
+
+      <div id="pkg-technical" class="pkg-tab-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700">📋 Technical Approach Narrative</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-gold btn-sm" onclick="copySection('pkg-technical-content')">Copy</button>
+              <button class="btn btn-ghost btn-sm" onclick="regenerateSection('technical')">↺ Regenerate</button>
+            </div>
+          </div>
+          <div id="pkg-technical-content" style="background:var(--card2);border-radius:8px;padding:16px;font-size:13px;line-height:1.9;color:var(--text);min-height:120px"></div>
+        </div>
+      </div>
+
+      <div id="pkg-price" class="pkg-tab-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700">💲 Price Schedule</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-gold btn-sm" onclick="copySection('pkg-price-content')">Copy</button>
+            </div>
+          </div>
+          <div id="pkg-price-content" style="background:var(--card2);border-radius:8px;padding:16px;font-size:13px;line-height:1.9;color:var(--text);min-height:120px"></div>
+        </div>
+      </div>
+
+      <div id="pkg-pastperf" class="pkg-tab-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700">⭐ Past Performance Section</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-gold btn-sm" onclick="copySection('pkg-pastperf-content')">Copy</button>
+              <button class="btn btn-ghost btn-sm" onclick="regenerateSection('pastperf')">↺ Regenerate</button>
+            </div>
+          </div>
+          <div id="pkg-pastperf-content" style="background:var(--card2);border-radius:8px;padding:16px;font-size:13px;line-height:1.9;color:var(--text);min-height:120px"></div>
+        </div>
+      </div>
+
+      <div id="pkg-capability" class="pkg-tab-panel" style="display:none">
+        <div class="card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div style="font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700">🏆 Capability Statement</div>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-gold btn-sm" onclick="copySection('pkg-capability-content')">Copy</button>
+              <button class="btn btn-ghost btn-sm" onclick="regenerateSection('capability')">↺ Regenerate</button>
+            </div>
+          </div>
+          <div id="pkg-capability-content" style="background:var(--card2);border-radius:8px;padding:16px;font-size:13px;line-height:1.9;color:var(--text);min-height:120px"></div>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="copyFullPackage()" style="padding:12px 24px">📋 Copy Full Package</button>
+        <button class="btn btn-ghost" onclick="generateBidPackage()">↺ Regenerate All</button>
+        <button class="btn btn-ghost" style="margin-left:auto;border-color:rgba(224,82,82,0.3);color:var(--muted)" onclick="clearOutput()">Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 4 — CO ROLODEX
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-corolodex">
+  <div class="sec-eye">Contracting Officer Relationships</div>
+  <div class="sec-title">CO ROLODEX</div>
+  <div class="gold-rule"></div>
+
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn btn-gold btn-sm">All</button>
+    <button class="btn btn-ghost btn-sm">🟢 Warm</button>
+    <button class="btn btn-ghost btn-sm">🟡 Building</button>
+    <button class="btn btn-ghost btn-sm">⚪ Queue</button>
+    <input class="bb-input" type="text" placeholder="Search COs..." style="margin-left:auto;width:220px;padding:6px 12px;font-size:12px">
+  </div>
+
+  <!-- CO Cards -->
+  <div class="grid-2" style="gap:16px">
+
+    <div class="card card-gold">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="contact-avatar" style="width:46px;height:46px;font-size:16px">WW</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700">Weston Worsham</div>
+          <div style="font-size:11px;color:var(--muted)">NCA 36C786 · Cemetery Contracts · SE Region</div>
+        </div>
+        <span class="status-badge s-build">Building</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;font-size:12px">
+        <div><div style="color:var(--muted);font-size:10px;margin-bottom:3px">PHONE</div><a href="tel:6292590295" style="color:var(--gold);font-weight:700;font-size:14px">(629) 259-0295</a></div>
+        <div><div style="color:var(--muted);font-size:10px;margin-bottom:3px">EMAIL</div><a href="mailto:weston.worsham@va.gov" style="color:var(--gold)">weston.worsham@va.gov</a></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">
+        <strong style="color:var(--text)">Active opportunities:</strong> NCA Inscription (36C78626Q0061 · Jul 23) · GNC Canton grounds re-compete (watch)
+      </div>
+      <div style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:6px">Ethics Rule: No gifts, no meals, no anything &gt;$20</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm">Log Contact</button>
+        <button class="btn btn-ghost btn-sm">View Contracts</button>
+      </div>
+    </div>
+
+    <div class="card card-gold">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="contact-avatar" style="width:46px;height:46px;font-size:16px">MF</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700">Melody Flores</div>
+          <div style="font-size:11px;color:var(--muted)">USDA Forest Service · Ocoee Ranger District</div>
+        </div>
+        <span class="status-badge s-build">Active Bid</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;font-size:12px">
+        <div><div style="color:var(--muted);font-size:10px;margin-bottom:3px">PHONE</div><a href="tel:6063715634" style="color:var(--gold);font-weight:700;font-size:14px">(606) 371-5634</a></div>
+        <div><div style="color:var(--muted);font-size:10px;margin-bottom:3px">EMAIL</div><a href="mailto:melody.flores@usda.gov" style="color:var(--gold)">melody.flores@usda.gov</a></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">
+        <strong style="color:var(--text)">Active:</strong> 12444026Q0100 · Janitorial · Due July 2
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm">Log Contact</button>
+        <button class="btn btn-teal btn-sm">Submit Bid</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="contact-avatar" style="width:46px;height:46px;font-size:16px">KK</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700">Kurt Kramer</div>
+          <div style="font-size:11px;color:var(--muted)">VA NCO 8 · Orlando · Carpet &amp; Facilities</div>
+        </div>
+        <span class="status-badge s-cold">Queue</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;font-size:12px">
+        <div><div style="color:var(--muted);font-size:10px;margin-bottom:3px">PHONE</div><a href="tel:4076464278" style="color:var(--gold);font-weight:700;font-size:14px">(407) 646-4278</a></div>
+        <div><div style="color:var(--muted);font-size:10px;margin-bottom:3px">EMAIL</div><a href="mailto:kurt.kramer@va.gov" style="color:var(--gold)">kurt.kramer@va.gov</a></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">
+        <strong style="color:var(--text)">Watch:</strong> 36C24825N0905 · Carpet re-compete · Expires Aug 31, 2026
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm">Log Contact</button>
+        <button class="btn btn-ghost btn-sm">View Contracts</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <div class="contact-avatar" style="width:46px;height:46px;font-size:16px">MM</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700">Marilia Mateo</div>
+          <div style="font-size:11px;color:var(--muted)">NPS GRSM · Great Smoky Mountains</div>
+        </div>
+        <span class="status-badge s-cold">Queue</span>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:12px">
+        <strong style="color:var(--text)">Active:</strong> 140P5326Q0027 · Custodial
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-ghost btn-sm">Research</button>
+      </div>
+    </div>
+
+    <!-- Add CO card -->
+    <div style="background:transparent;border:1px dashed var(--border2);border-radius:10px;padding:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;gap:8px" onclick="addCO()">
+      <span style="font-size:20px">+</span> Add Contracting Officer
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 5 — INTEL
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-intel">
+  <div class="sec-eye">Competitive Intelligence</div>
+  <div class="sec-title">INTEL FEED</div>
+  <div class="gold-rule"></div>
+
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn btn-gold btn-sm">All</button>
+    <button class="btn btn-ghost btn-sm">🎯 Incumbent</button>
+    <button class="btn btn-ghost btn-sm">🔄 Re-compete</button>
+    <button class="btn btn-ghost btn-sm">📍 Georgia</button>
+    <button class="btn btn-ghost btn-sm">🌴 Florida</button>
+  </div>
+
+  <div class="intel-card">
+    <div class="intel-type intel-recompete">🔄 RE-COMPETE TARGET · PRIORITY</div>
+    <div class="intel-title">Georgia National Cemetery — Grounds Maintenance (Canton, GA)</div>
+    <div class="intel-row">
+      <span><strong>Incumbent:</strong> Native Contractors Inc. (Dallas TX — 800 mi away)</span>
+      <span><strong>UEI:</strong> CVHHMTMPDAE9</span>
+      <span><strong>Award:</strong> $239,107 → clawed to ~$200,888</span>
+    </div>
+    <div class="intel-row" style="margin-top:6px">
+      <span><strong>Contract:</strong> 36C78622N0408</span>
+      <span><strong>Parent IDV:</strong> 36C78618D0065</span>
+      <span><strong>CO:</strong> Weston Worsham</span>
+      <span><strong>NAICS:</strong> 561730</span>
+    </div>
+    <div class="alert alert-amber" style="margin-top:10px;font-size:11px">⚠ Verify set-aside type with Worsham before investing bid resources — previously may have had SDVOSB elements</div>
+    <div class="intel-action">
+      <button class="btn btn-ghost btn-sm">Contact CO</button>
+      <button class="btn btn-ghost btn-sm">Research Sub</button>
+      <button class="btn btn-ghost btn-sm">USAspending</button>
+    </div>
+  </div>
+
+  <div class="intel-card">
+    <div class="intel-type intel-incumbent">🎯 INCUMBENT WATCH · NAICS 561740</div>
+    <div class="intel-title">VA FL Carpet Cleaning — Re-compete Window</div>
+    <div class="intel-row">
+      <span><strong>Contract expires:</strong> August 31, 2026</span>
+      <span><strong>Value:</strong> ~$205,500/yr (3 locations, 330K sq ft)</span>
+      <span><strong>CO:</strong> Kurt Kramer</span>
+    </div>
+    <div class="intel-row" style="margin-top:6px">
+      <span><strong>Brett advantage:</strong> 17 years Orlando experience</span>
+      <span><strong>Sub lead:</strong> Cubix Inc. (MilliCare)</span>
+    </div>
+    <div class="intel-action">
+      <button class="btn btn-ghost btn-sm">Contact Kramer</button>
+      <button class="btn btn-ghost btn-sm">Practice Bid</button>
+    </div>
+  </div>
+
+  <div class="intel-card">
+    <div class="intel-type" style="color:var(--blue)">🔵 WATCH · USACE LANIER</div>
+    <div class="intel-title">USACE Lake Sidney Lanier — Grounds Maintenance (Buford, GA)</div>
+    <div class="intel-row">
+      <span><strong>Distance from Brett:</strong> 15 minutes</span>
+      <span><strong>NAICS:</strong> 561730</span>
+      <span><strong>Set-aside history:</strong> Total Small Business</span>
+    </div>
+    <div class="intel-row" style="margin-top:6px">
+      <span style="color:var(--amber)">Action: Add "Lake Sidney Lanier" / "Buford GA" / USACE Mobile District to SAM saved searches</span>
+    </div>
+    <div class="intel-action">
+      <button class="btn btn-ghost btn-sm">SAM Search</button>
+      <button class="btn btn-ghost btn-sm">Find CO</button>
+    </div>
+  </div>
+
+  <div class="intel-card">
+    <div class="intel-type intel-recompete">🔄 LONG GAME · NAICS 561730</div>
+    <div class="intel-title">Fort Stewart / MICC — Grounds Contract</div>
+    <div class="intel-row">
+      <span><strong>COs:</strong> Lacey Turner, Cosmin Popa (W6QM MICC-FT STEWART)</span>
+      <span><strong>Re-compete:</strong> ~2031</span>
+    </div>
+    <div class="intel-action">
+      <button class="btn btn-ghost btn-sm">Log for 2031</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 6 — SUB BENCH
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-subbench">
+  <div class="sec-eye">Subcontractor Network</div>
+  <div class="sec-title">SUB BENCH</div>
+  <div class="gold-rule"></div>
+
+  <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+    <button class="btn btn-gold btn-sm">All Trades</button>
+    <button class="btn btn-ghost btn-sm">Grounds</button>
+    <button class="btn btn-ghost btn-sm">Janitorial</button>
+    <button class="btn btn-ghost btn-sm">Carpet</button>
+    <button class="btn btn-ghost btn-sm">Inscription</button>
+  </div>
+
+  <div class="grid-2" style="gap:16px">
+
+    <div class="sub-card card-teal">
+      <div class="sub-header">
+        <div class="sub-grade grade-a">A</div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Blade &amp; Branch Lawn Care &amp; Landscaping</div>
+          <div style="font-size:11px;color:var(--muted)">Grounds · Cemetery · North Georgia</div>
+        </div>
+      </div>
+      <div class="sub-row"><span class="sub-key">Owner</span><span class="sub-val">Trent</span></div>
+      <div class="sub-row"><span class="sub-key">Phone</span><span class="sub-val"><a href="tel:6782388550" style="color:var(--gold)">(678) 238-8550</a></span></div>
+      <div class="sub-row"><span class="sub-key">Email</span><span class="sub-val"><a href="mailto:info@bladeandbranchllc.com" style="color:var(--gold)">info@bladeandbranchllc.com</a></span></div>
+      <div class="sub-row"><span class="sub-key">Team</span><span class="sub-val">4-person owner-operator</span></div>
+      <div class="sub-row"><span class="sub-key">Gov't Experience</span><span class="sub-val" style="color:var(--amber)">New — trusted, fully equipped</span></div>
+      <div class="sub-row"><span class="sub-key">Primary Use</span><span class="sub-val">GNC Cemetery grounds</span></div>
+      <div class="sub-row"><span class="sub-key">SAM Status</span><span class="sub-val">Verify</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm">Work Order</button>
+        <button class="btn btn-ghost btn-sm">Vet Record</button>
+      </div>
+    </div>
+
+    <div class="sub-card card-teal">
+      <div class="sub-header">
+        <div class="sub-grade grade-a">A</div>
+        <div>
+          <div style="font-size:14px;font-weight:700">SGS Landscape Consultants LLC</div>
+          <div style="font-size:11px;color:var(--muted)">Grounds · Sugar Hill GA · ~1 mi from Brett</div>
+        </div>
+      </div>
+      <div class="sub-row"><span class="sub-key">Contact</span><span class="sub-val">Stacey Myers</span></div>
+      <div class="sub-row"><span class="sub-key">Location</span><span class="sub-val">Gwinnett County · Sugar Hill</span></div>
+      <div class="sub-row"><span class="sub-key">Fleet</span><span class="sub-val">5 enclosed landscaping trucks (confirmed in-person)</span></div>
+      <div class="sub-row"><span class="sub-key">Primary Use</span><span class="sub-val">GNC Canton re-compete (35 mi vs incumbent 800 mi)</span></div>
+      <div class="sub-row"><span class="sub-key">SAM Status</span><span class="sub-val">Verify</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm">Work Order</button>
+        <button class="btn btn-ghost btn-sm">Vet Record</button>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-grade grade-a">A</div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Greenland Landscape Services</div>
+          <div style="font-size:11px;color:var(--muted)">Grounds · Dacula GA</div>
+        </div>
+      </div>
+      <div class="sub-row"><span class="sub-key">Owner</span><span class="sub-val">Giovanni Rojas</span></div>
+      <div class="sub-row"><span class="sub-key">Geography</span><span class="sub-val">North Georgia — confirmed</span></div>
+      <div class="sub-row"><span class="sub-key">Iron Gate?</span><span class="sub-val" style="color:var(--red)">❌ Never — conflict of interest</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm">Work Order</button>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-grade grade-b">B</div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Everlasting Granite</div>
+          <div style="font-size:11px;color:var(--muted)">Stone Inscription · Sandblasting · NCA work</div>
+        </div>
+      </div>
+      <div class="sub-row"><span class="sub-key">Owner</span><span class="sub-val">Gregg Craft</span></div>
+      <div class="sub-row"><span class="sub-key">Phone</span><span class="sub-val"><a href="tel:7067336140" style="color:var(--gold)">(706) 733-6140</a></span></div>
+      <div class="sub-row"><span class="sub-key">Email</span><span class="sub-val"><a href="mailto:gregg@everlastinggm.com" style="color:var(--gold)">gregg@everlastinggm.com</a></span></div>
+      <div class="sub-row"><span class="sub-key">Capability</span><span class="sub-val">Sandblasting confirmed — top pick for NCA inscription</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm">Get Quote</button>
+        <button class="btn btn-ghost btn-sm">Vet Record</button>
+      </div>
+    </div>
+
+    <div class="sub-card">
+      <div class="sub-header">
+        <div class="sub-grade grade-b">B</div>
+        <div>
+          <div style="font-size:14px;font-weight:700">Naturally Clean Janitorial</div>
+          <div style="font-size:11px;color:var(--muted)">Janitorial · Tennessee</div>
+        </div>
+      </div>
+      <div class="sub-row"><span class="sub-key">Phone</span><span class="sub-val"><a href="tel:8654447668" style="color:var(--gold)">(865) 444-7668</a></span></div>
+      <div class="sub-row"><span class="sub-key">Active Bid</span><span class="sub-val">Ocoee Ranger District · July 2</span></div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn btn-ghost btn-sm">Work Order</button>
+      </div>
+    </div>
+
+    <!-- Add Sub -->
+    <div style="background:transparent;border:1px dashed var(--border2);border-radius:10px;padding:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--muted);font-size:12px;letter-spacing:1px;text-transform:uppercase;gap:8px">
+      <span style="font-size:20px">+</span> Add Subcontractor
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 7 — DISPATCH (Baxter's WOW moment)
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-dispatch">
+  <div class="sec-eye">Field Operations</div>
+  <div class="sec-title">DISPATCH CENTER</div>
+  <div class="gold-rule"></div>
+
+  <div class="grid-2" style="align-items:start;gap:20px">
+    <!-- Active Jobs -->
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:700">ACTIVE WORK ORDERS</div>
+
+      <div class="dispatch-job card-teal">
+        <div class="dispatch-header">
+          <div class="dispatch-icon" style="background:var(--teal-dim);border:1px solid rgba(13,147,115,0.3)">🌿</div>
+          <div style="flex:1">
+            <div class="dispatch-title">Georgia National Cemetery — Grounds</div>
+            <div class="dispatch-loc">📍 1080 Scott Cannon Rd, Canton, GA 30114</div>
+          </div>
+          <span class="status-badge s-warm">IN PROGRESS</span>
+        </div>
+
+        <!-- Compliance Check BEFORE dispatch -->
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">PRE-DISPATCH COMPLIANCE</div>
+        <div class="compliance-row comp-pass">✓ SCA WD Rate: $17.20/hr confirmed for Cherokee County, GA</div>
+        <div class="compliance-row comp-pass">✓ H&amp;W Fringe: $5.36/hr included</div>
+        <div class="compliance-row comp-pass">✓ Sub SAM Status: Blade &amp; Branch — Active</div>
+        <div class="compliance-row comp-pass">✓ Worker Age: All crew 18+ (NCA requirement)</div>
+        <div class="compliance-row comp-warn">⚠ NCA Grass Height: Must not exceed 3" — inspect before leaving</div>
+        <div class="compliance-row comp-warn">⚠ Equipment Zone: No riding mowers within 18" of headstones</div>
+
+        <!-- SOW Checklist -->
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin:14px 0 8px;font-weight:700">SOW CHECKLIST</div>
+        <div class="checklist" id="checklist-gnc">
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <span>Crew briefed — NCA standards reviewed, cemetery protocols confirmed</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box checked">✓</div>
+            <span>All grounds mowed to ≤3" — headstone zones hand-trimmed</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <span>Flag/decoration preservation confirmed — none disturbed</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <span>Equipment exclusion zones observed — 18" perimeter respected</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <span>Debris removed and disposed of — grounds inspection complete</span>
+          </div>
+          <div class="check-item" onclick="toggleCheck(this)">
+            <div class="check-box">✓</div>
+            <span>Photo documentation — before/after sent to Brett</span>
+          </div>
+        </div>
+
+        <!-- GPS -->
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;font-weight:700">GPS STATUS</div>
+        <div class="gps-bar">
+          <div class="gps-dot gps-live"></div>
+          <div style="flex:1"><strong>Blade &amp; Branch (Trent)</strong> — Checked in 7:34 AM</div>
+          <div style="color:var(--teal);font-weight:700;font-size:11px">LIVE</div>
+        </div>
+        <div class="gps-bar" style="margin-top:6px">
+          <div class="gps-dot gps-pending"></div>
+          <div style="flex:1"><strong>SGS Landscape (Stacey)</strong> — Expected 8:00 AM</div>
+          <div style="color:var(--amber);font-weight:700;font-size:11px">PENDING</div>
+        </div>
+
+        <div style="display:flex;gap:8px;margin-top:14px">
+          <button class="btn btn-teal btn-sm">✓ Close Work Order</button>
+          <button class="btn btn-ghost btn-sm">📧 CO Report Draft</button>
+          <button class="btn btn-ghost btn-sm">⚠ Incident Log</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Work Order Builder + No-Show Protocol -->
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:700">DISPATCH NEW WORK ORDER</div>
+      <div class="card card-gold" style="margin-bottom:16px">
+        <div class="bb-form">
+          <div class="bb-field">
+            <div class="bb-label">Contract / Location</div>
+            <select class="bb-select">
+              <option>Georgia National Cemetery — Canton, GA</option>
+              <option>Ocoee Ranger District — TN (pending award)</option>
+            </select>
+          </div>
+          <div class="bb-field">
+            <div class="bb-label">Service Type</div>
+            <select class="bb-select">
+              <option>Grounds — Full Service Visit</option>
+              <option>Grounds — Spot Mow</option>
+              <option>Janitorial — Standard Visit</option>
+              <option>Janitorial — Deep Clean</option>
+            </select>
+          </div>
+          <div class="grid-2" style="gap:12px">
+            <div class="bb-field">
+              <div class="bb-label">Primary Sub</div>
+              <select class="bb-select">
+                <option>Blade &amp; Branch (Trent)</option>
+                <option>SGS Landscape (Stacey)</option>
+                <option>Naturally Clean Janitorial</option>
+              </select>
+            </div>
+            <div class="bb-field">
+              <div class="bb-label">Backup Sub</div>
+              <select class="bb-select">
+                <option>Greenland Landscape (Giovanni)</option>
+                <option>SGS Landscape (Stacey)</option>
+                <option>None assigned</option>
+              </select>
+            </div>
+          </div>
+          <div class="bb-field">
+            <div class="bb-label">Scheduled Date / Time</div>
+            <input class="bb-input" type="datetime-local">
+          </div>
+          <button class="btn btn-gold" style="width:100%">🚛 Dispatch &amp; Send Work Order</button>
+        </div>
+      </div>
+
+      <!-- No-show protocol -->
+      <div class="card card-red">
+        <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--red);font-weight:700;margin-bottom:12px">⚡ NO-SHOW PROTOCOL</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.7">
+          <div style="margin-bottom:8px"><strong style="color:var(--text)">T+0:</strong> Scheduled check-in time</div>
+          <div style="margin-bottom:8px"><strong style="color:var(--amber)">T+30:</strong> No GPS check-in → automatic alert to Baxter + Brett</div>
+          <div style="margin-bottom:8px"><strong style="color:var(--red)">T+45:</strong> Backup sub triggered — auto work order sent</div>
+          <div><strong style="color:var(--red)">T+60:</strong> CO notification drafted — performance risk flagged</div>
+        </div>
+        <div class="compliance-row comp-warn" style="margin-top:10px">⚠ Active: Stacey Myers (SGS) — T+12 since expected arrival</div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:10px;border-color:rgba(224,82,82,0.4);color:var(--red)">Trigger Backup Sub</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 8 — COMPLIANCE
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-compliance">
+  <div class="sec-eye">SCA · FAR · DOL · Age Determination</div>
+  <div class="sec-title">COMPLIANCE CENTER</div>
+  <div class="gold-rule"></div>
+
+  <div class="grid-2" style="gap:20px;align-items:start">
+    <!-- SCA WD Reference -->
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">SCA WAGE DETERMINATION REFERENCE</div>
+      <div class="card">
+        <table class="wd-table">
+          <thead>
+            <tr>
+              <th>Occupation Code</th>
+              <th>Title</th>
+              <th>NAICS</th>
+              <th>WD Rate/hr</th>
+              <th>H&amp;W/hr</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>14041</td><td>Janitor</td><td>561720</td><td class="flag-pass">$16.20+</td><td>$5.36</td></tr>
+            <tr><td>14010</td><td>Custodial Worker</td><td>561720</td><td class="flag-pass">$15.80+</td><td>$5.36</td></tr>
+            <tr><td>11150</td><td>Groundskeeper</td><td>561730</td><td class="flag-pass">$17.20+</td><td>$5.36</td></tr>
+            <tr><td>11210</td><td>Laborer (Grounds)</td><td>561730</td><td class="flag-pass">$15.50+</td><td>$5.36</td></tr>
+            <tr><td>15090</td><td>Cemetery Worker</td><td>561990</td><td class="flag-pass">$17.20+</td><td>$5.36</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:10px;color:var(--muted);margin-top:10px">Rates vary by county/state. Always pull current WD from SAM.gov or DOL Wage Determinations Online. Rates above are illustrative — verify at WDOl.gov before any bid.</div>
+        <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="window.open('https://www.dol.gov/agencies/whd/government-contracts/service-contracts/wage-determinations')">→ Open DOL WDOL</button>
+      </div>
+
+      <!-- Age Determination Calculator -->
+      <div style="margin-top:20px">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">AGE DETERMINATION CALCULATOR</div>
+        <div class="card card-gold">
+          <div class="bb-field" style="margin-bottom:14px">
+            <div class="bb-label">Worker Date of Birth</div>
+            <input class="bb-input" type="date" id="age-dob" oninput="calcAge()">
+          </div>
+          <div id="age-result" style="font-size:13px;color:var(--muted)">Enter DOB to check eligibility</div>
+          <div class="divider"></div>
+          <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:8px;letter-spacing:1px;text-transform:uppercase">Task Eligibility Matrix</div>
+          <table class="wd-table">
+            <thead>
+              <tr><th>Task</th><th>Under 16</th><th>16–17</th><th>18+</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Solo / unsupervised</td><td class="flag-red">❌</td><td class="flag-red">❌</td><td class="flag-pass">✓</td></tr>
+              <tr><td>Heavy equipment</td><td class="flag-red">❌</td><td class="flag-red">❌</td><td class="flag-pass">✓</td></tr>
+              <tr><td>Hazmat / chemicals</td><td class="flag-red">❌</td><td style="color:var(--amber)">⚠ Restricted</td><td class="flag-pass">✓</td></tr>
+              <tr><td>Walk-behind mower</td><td class="flag-red">❌</td><td class="flag-pass">✓</td><td class="flag-pass">✓</td></tr>
+              <tr><td>Headstone handling (NCA)</td><td class="flag-red">❌</td><td class="flag-red">❌</td><td class="flag-pass">✓ Min 18</td></tr>
+              <tr><td>Interior janitorial (supervised)</td><td style="color:var(--amber)">⚠</td><td class="flag-pass">✓</td><td class="flag-pass">✓</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Friction Points Eliminated -->
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">COMPLIANCE FLAGS — ACTIVE BIDS</div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="compliance-row comp-pass">✓ Ocoee Janitorial: SCA WD pulled for Tennessee — rate verified</div>
+        <div class="compliance-row comp-warn">⚠ Mount Dora (FL): MFMP 1% fee — must be included in price</div>
+        <div class="compliance-row comp-warn">⚠ NCA Inscription: Sandblasting certification required per SOW</div>
+        <div class="compliance-row comp-fail">❌ Reps &amp; Certs: Not completed — NO BID SUBMISSION until done</div>
+      </div>
+
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">IRONWORKS FRICTION ELIMINATOR</div>
+      <div class="card">
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:12px">
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>Wrong WD rate applied → Auto-loaded from DOL at contract setup</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>WD revision missed mid-contract → API monitors, alerts immediately</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>Sub no-show discovered late → GPS check-in + backup at T+30</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>DOL audit with no docs → Payroll compliance report every pay period</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>Age-restricted worker on wrong task → Age calc flags at scheduling</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>Florida 1% MFMP fee missed → Built into bid pricing engine</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>Cemetery grass height violation → NCA 3" standard enforced in checklist</div></div>
+          <div class="today-card" style="margin-bottom:0"><div style="width:24px;color:var(--teal);font-weight:700">✓</div><div>Option year surprise → 120-day countdown from award</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     TAB 9 — BAXTER BOARD
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-baxter">
+  <div class="baxter-header">
+    <div class="baxter-avatar">BS</div>
+    <div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--teal)">BAXTER'S BOARD</div>
+      <div style="font-size:12px;color:var(--muted)">Baxter Smith · Field Operations · Subcontractor Network · HUBZone Address</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:2px">2591 Stone Rd, Atlanta, GA 30344 · HUBZone qualifying through 2028</div>
+    </div>
+    <div style="margin-left:auto;text-align:right">
+      <div style="font-size:10px;color:var(--muted);margin-bottom:4px">CALL BRETT</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold)">Direct Line</div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="gap:20px;align-items:start">
+    <!-- Today's field orders -->
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">TODAY'S FIELD ORDERS</div>
+      <div class="today-card">
+        <div class="today-time">7:30 AM</div>
+        <div class="today-text">Blade &amp; Branch dispatched to GNC Canton
+          <div class="sub">GPS check-in by 7:30 · Call Trent if no check-in: <a href="tel:6782388550" style="color:var(--gold)">(678) 238-8550</a></div>
+        </div>
+      </div>
+      <div class="today-card">
+        <div class="today-time">8:00 AM</div>
+        <div class="today-text">SGS Landscape — confirm arrival at site
+          <div class="sub">Contact Stacey if no show: check queue — backup is Giovanni Rojas</div>
+        </div>
+      </div>
+      <div class="today-card">
+        <div class="today-time">END OF DAY</div>
+        <div class="today-text">Photo report — before/after to Brett
+          <div class="sub">Text photos to Brett · Note any issues before CO finds out</div>
+        </div>
+      </div>
+
+      <!-- NCA Protocol Card -->
+      <div style="margin-top:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">NCA CEMETERY RULES — MEMORIZE THESE</div>
+      <div class="card card-red">
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--red);font-weight:700;flex-shrink:0">①</span><span>Grass: <strong>Max 3 inches</strong> — measure before leaving. No exceptions.</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--red);font-weight:700;flex-shrink:0">②</span><span>Equipment: <strong>18" buffer from all headstones</strong> — use hand tools inside the zone</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--red);font-weight:700;flex-shrink:0">③</span><span>Flags &amp; decorations: <strong>Do not move or disturb</strong> — work around them</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--red);font-weight:700;flex-shrink:0">④</span><span>Workers near headstones: <strong>Must be 18+</strong> — NCA requirement, no exceptions</span></div>
+          <div style="display:flex;gap:10px;align-items:flex-start"><span style="color:var(--red);font-weight:700;flex-shrink:0">⑤</span><span>Riding mowers: <strong>No riding mowers near burial plots</strong> — walk-behind only in close areas</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin for Baxter -->
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">BAXTER'S ADMIN QUEUE</div>
+      <div class="today-card">
+        <div class="today-time" style="color:var(--red)">URGENT</div>
+        <div class="today-text">Reps &amp; Certs in SAM.gov — do with Brett together
+          <div class="sub">Both founders required · No bids until complete</div>
+        </div>
+      </div>
+      <div class="today-card">
+        <div class="today-time" style="color:var(--red)">URGENT</div>
+        <div class="today-text">HUBZone application — certify.sba.gov
+          <div class="sub">Your 2591 Stone Rd address qualifies through 2028 · Apply now</div>
+        </div>
+      </div>
+      <div class="today-card">
+        <div class="today-time" style="color:var(--amber)">AUG 22</div>
+        <div class="today-text">60-day notarized Entity Administrator letter
+          <div class="sub">Submit via fsd.gov · Deadline: August 22, 2026</div>
+        </div>
+      </div>
+
+      <div style="margin-top:20px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;font-weight:700">SUB BENCH — BAXTER'S CONTACTS</div>
+      <div class="card">
+        <div class="contact-row">
+          <div class="contact-avatar">BB</div>
+          <div><div class="contact-name">Blade &amp; Branch (Trent)</div><div class="contact-agency">Primary grounds sub</div></div>
+          <div class="contact-phone"><a href="tel:6782388550">(678) 238-8550</a></div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar">SG</div>
+          <div><div class="contact-name">SGS Landscape (Stacey)</div><div class="contact-agency">Grounds · Sugar Hill · ~1 mi</div></div>
+          <div class="contact-phone">Contact to get</div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar">GR</div>
+          <div><div class="contact-name">Greenland Landscape (Giovanni)</div><div class="contact-agency">Grounds · Dacula · Backup</div></div>
+          <div class="contact-phone">Sub only</div>
+        </div>
+        <div class="contact-row">
+          <div class="contact-avatar">NC</div>
+          <div><div class="contact-name">Naturally Clean Janitorial</div><div class="contact-agency">Janitorial · Tennessee</div></div>
+          <div class="contact-phone"><a href="tel:8654447668">(865) 444-7668</a></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     UPGRADE WALL TABS — Contracts / Financials / CPARS
+══════════════════════════════════════════════ -->
+<div class="tab-panel" id="tab-contracts">
+  <div class="sec-eye">Post-Award Management</div>
+  <div class="sec-title">CONTRACTS</div>
+  <div class="gold-rule"></div>
+  <div class="upgrade-wall">
+    <div class="upgrade-lock">📄</div>
+    <div class="upgrade-title">CONTRACTS MODULE</div>
+    <div class="upgrade-sub">SOW tracking, FAR clause library, option year countdowns (120/90/60/30-day alerts), deliverable tracking, and CO reporting dashboard. Unlocks with Operator or Full Stack plan.<br><br>Win your first contract, then activate this module.</div>
+    <div class="upgrade-tiers">
+      <div class="tier-card">
+        <div class="tier-name">Scout</div>
+        <div class="tier-price">$497</div>
+        <div class="tier-period">/ month · Hunt-only</div>
+        <ul class="tier-features">
+          <li>Bid Builder + SCA Calculator</li>
+          <li>CO Rolodex (10 COs)</li>
+          <li>Intel Feed (read-only)</li>
+          <li>Sub Bench (5 subs)</li>
+        </ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-name">Operator</div>
+        <div class="tier-price">$997</div>
+        <div class="tier-period">/ month · Hunt + Execute</div>
+        <ul class="tier-features">
+          <li>Everything in Scout</li>
+          <li>Contracts Module ✓</li>
+          <li>Dispatch + GPS Check-in</li>
+          <li>Compliance Center</li>
+          <li>Payroll Auditor</li>
+          <li>QuickBooks Sync</li>
+        </ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Full Stack</div>
+        <div class="tier-price">$2,497</div>
+        <div class="tier-period">/ month · Full IronOS</div>
+        <ul class="tier-features">
+          <li>Everything in Operator</li>
+          <li>CPARS Module</li>
+          <li>Financials + P&amp;L</li>
+          <li>Unlimited COs + Subs</li>
+          <li>Iron Gate consulting access</li>
+          <li>White-label option</li>
+        </ul>
+      </div>
+    </div>
+    <button class="upgrade-cta">Upgrade to Operator — $997/mo</button>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-financials">
+  <div class="sec-eye">Revenue · Margin · P&amp;L</div>
+  <div class="sec-title">FINANCIALS</div>
+  <div class="gold-rule"></div>
+  <div class="upgrade-wall">
+    <div class="upgrade-lock">💰</div>
+    <div class="upgrade-title">FINANCIALS MODULE</div>
+    <div class="upgrade-sub">Real-time per-contract P&amp;L. Know your margin before the IPP.gov invoice goes in. QuickBooks sync (Bid → QB job estimate; Payroll audit → QB payroll), sub invoice reconciliation, and progress payment tracking. Unlocks with Operator plan.</div>
+    <div class="upgrade-tiers">
+      <div class="tier-card">
+        <div class="tier-name">Scout</div>
+        <div class="tier-price">$497</div>
+        <div class="tier-period">/ month</div>
+        <ul class="tier-features"><li>Bid pricing only</li><li>No QB sync</li></ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-name">Operator</div>
+        <div class="tier-price">$997</div>
+        <div class="tier-period">/ month</div>
+        <ul class="tier-features"><li>Financials Module ✓</li><li>QB Sync (both endpoints)</li><li>Sub invoice reconciliation</li><li>Progress payment tracking</li></ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Full Stack</div>
+        <div class="tier-price">$2,497</div>
+        <div class="tier-period">/ month</div>
+        <ul class="tier-features"><li>Full P&amp;L dashboard</li><li>Multi-contract margin view</li><li>Iron Gate client reporting</li></ul>
+      </div>
+    </div>
+    <button class="upgrade-cta">Upgrade to Operator — $997/mo</button>
+  </div>
+</div>
+
+<div class="tab-panel" id="tab-cpars">
+  <div class="sec-eye">Contractor Performance Assessment</div>
+  <div class="sec-title">CPARS</div>
+  <div class="gold-rule"></div>
+  <div class="upgrade-wall">
+    <div class="upgrade-lock">⭐</div>
+    <div class="upgrade-title">CPARS MODULE</div>
+    <div class="upgrade-sub">Your past performance record is your most valuable asset in federal contracting. The CPARS module auto-builds monthly performance data from your scheduling and delivery records, generates CPARS prep packages, and banks past performance narratives for future proposals. Full Stack only.</div>
+    <div class="upgrade-tiers">
+      <div class="tier-card">
+        <div class="tier-name">Scout</div>
+        <div class="tier-price">$497</div>
+        <div class="tier-period">/ month</div>
+        <ul class="tier-features"><li>No CPARS</li></ul>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Operator</div>
+        <div class="tier-price">$997</div>
+        <div class="tier-period">/ month</div>
+        <ul class="tier-features"><li>Basic performance log</li><li>No CPARS prep</li></ul>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-name">Full Stack</div>
+        <div class="tier-price">$2,497</div>
+        <div class="tier-period">/ month</div>
+        <ul class="tier-features"><li>CPARS Module ✓</li><li>Auto performance data</li><li>Past performance library</li><li>Proposal narrative bank</li></ul>
+      </div>
+    </div>
+    <button class="upgrade-cta">Upgrade to Full Stack — $2,497/mo</button>
+  </div>
+</div>
+
+</div><!-- /page-body -->
+
+<script>
+// ── TAB SWITCHING ──
+function showTab(id, el) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+}
+
+// ── MODE TOGGLE ──
+function setMode(mode, btn) {
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// ── BID BUILDER CALCULATOR ──
+function bbCalc() {
+  const wd = parseFloat(document.getElementById('bb-wdrate').value) || 0;
+  const hw = parseFloat(document.getElementById('bb-hw').value) || 0;
+  const hrs = parseFloat(document.getElementById('bb-hours').value) || 0;
+  const margin = parseFloat(document.getElementById('bb-margin').value) || 25;
+  const isFL = document.getElementById('bb-state').value === 'FL';
+  const isSub = document.getElementById('bb-subtype').value === 'sub';
+
+  const basewage = wd * hrs;
+  const hwTotal = hw * hrs;
+  const labor = basewage + hwTotal;
+  const overhead = labor * 0.12;
+  const subtotal = labor + overhead;
+  const flFee = isFL ? subtotal * 0.01 : 0;
+  const subWithFL = subtotal + flFee;
+  const total = subWithFL / (1 - margin / 100);
+
+  const fmt = v => v > 0 ? '$' + v.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
+
+  document.getElementById('res-basewage').textContent = fmt(basewage);
+  document.getElementById('res-hw').textContent = fmt(hwTotal);
+  document.getElementById('res-labor').textContent = fmt(labor);
+  document.getElementById('res-overhead').textContent = fmt(overhead);
+  document.getElementById('res-subtotal').textContent = fmt(subtotal);
+  document.getElementById('res-margin-pct').textContent = margin + '%';
+  document.getElementById('res-fl').textContent = fmt(flFee);
+  document.getElementById('res-fl-row').style.display = isFL ? 'flex' : 'none';
+  document.getElementById('res-total').textContent = total > 0 ? '$' + total.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2}) : 'Enter data →';
+  document.getElementById('res-total').style.color = total > 0 ? 'var(--gold)' : 'var(--muted)';
+
+  // Compliance checks
+  document.getElementById('comp-wd').className = 'compliance-row ' + (wd > 0 ? 'comp-pass' : 'comp-fail');
+  document.getElementById('comp-wd').textContent = wd > 0 ? '✓ WD Rate entered — SCA floor met' : '❌ WD Rate required — look up at WDOL.gov';
+  document.getElementById('comp-hw').className = 'compliance-row ' + (hw > 0 ? 'comp-pass' : 'comp-warn');
+  document.getElementById('comp-hw').textContent = hw > 0 ? '✓ H&W fringe included' : '⚠ H&W fringe not entered — required under SCA';
+  document.getElementById('comp-margin').className = 'compliance-row ' + (margin >= 15 ? 'comp-pass' : 'comp-fail');
+  document.getElementById('comp-margin').textContent = margin >= 15 ? '✓ Margin ' + margin + '% — meets threshold' : '❌ Margin below 15% — risk of loss';
+  document.getElementById('comp-note').textContent = isSub ? 'ℹ Pass-through: 15–18% margin acceptable' : 'ℹ Own-crew: target 25%+ margin for run-over risk';
+}
+
+function bbCheckFlorida() {
+  const isFL = document.getElementById('bb-state').value === 'FL';
+  document.getElementById('bb-fl-warning').style.display = isFL ? 'block' : 'none';
+  bbCalc();
+}
+
+function bbUpdateOccupation() {
+  const map = {
+    '561720': '14041 — Janitor / Custodial Worker',
+    '561730': '11150 — Groundskeeper',
+    '561740': '14045 — Carpet/Upholstery Cleaner',
+    '561990': '15090 — Cemetery Worker'
+  };
+  const naics = document.getElementById('bb-naics').value;
+  document.getElementById('bb-occupation').value = map[naics] || '';
+  bbCalc();
+}
+
+function bbCopy() {
+  const name = document.getElementById('bb-name').value || 'Unnamed Contract';
+  const total = document.getElementById('res-total').textContent;
+  const margin = document.getElementById('bb-margin').value;
+  const naics = document.getElementById('bb-naics').value;
+  const occ = document.getElementById('bb-occupation').value;
+  const wd = document.getElementById('bb-wdrate').value;
+  const hw = document.getElementById('bb-hw').value;
+  const hrs = document.getElementById('bb-hours').value;
+  const summary = `IRONWORKS BID SUMMARY
+Contract: ${name}
+NAICS: ${naics} | Occupation: ${occ}
+WD Rate: $${wd}/hr | H&W: $${hw}/hr | Hours: ${hrs}/yr
+Margin Target: ${margin}%
+━━━━━━━━━━━━━━━━━━━━
+BID FLOOR PRICE: ${total}
+SCA Compliant: ✓
+Generated: ${new Date().toLocaleDateString()}
+Ironstone Services LLC · UEI: SPKKEMJHT2Y5`;
+  
+  navigator.clipboard.writeText(summary).catch(() => {});
+  document.getElementById('bb-summary-box').style.display = 'block';
+  document.getElementById('bb-summary-box').textContent = summary;
+}
+
+function bbReset() {
+  ['bb-name','bb-wdrate','bb-hw','bb-hours'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('bb-margin').value = '25';
+  document.getElementById('bb-summary-box').style.display = 'none';
+  bbCalc();
+}
+
+// ── CHECKLIST TOGGLE ──
+function toggleCheck(item) {
+  const box = item.querySelector('.check-box');
+  if (box.classList.contains('checked')) {
+    box.classList.remove('checked');
+    box.textContent = '';
+  } else {
+    box.classList.add('checked');
+    box.textContent = '✓';
+  }
+}
+
+// ── AGE CALCULATOR ──
+function calcAge() {
+  const dob = new Date(document.getElementById('age-dob').value);
+  if (isNaN(dob)) return;
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  
+  let result, color;
+  if (age < 16) {
+    result = `Age ${age} — UNDER 16. Extremely limited. No solo work, no equipment, no hazmat, no cemetery work.`;
+    color = 'var(--red)';
+  } else if (age < 18) {
+    result = `Age ${age} — 16-17. Supervised janitorial and walk-behind mowing only. ❌ No cemetery headstone work. ❌ No heavy equipment.`;
+    color = 'var(--amber)';
+  } else {
+    result = `Age ${age} — 18+. ✓ Cleared for all tasks including NCA cemetery and heavy equipment.`;
+    color = 'var(--teal)';
+  }
+  document.getElementById('age-result').textContent = result;
+  document.getElementById('age-result').style.color = color;
+}
+
+// ── ADD CO PLACEHOLDER ──
+function addCO() {
+  alert('CO Add form — wire to backend in Phase 2');
+}
+
+// ── PKG TAB SWITCHER ──
+function showPkgTab(id, btn) {
+  document.querySelectorAll('.pkg-tab-panel').forEach(p => p.style.display = 'none');
+  document.getElementById('pkg-' + id).style.display = 'block';
+  document.querySelectorAll('.pkg-tab-btn').forEach(b => {
+    b.style.background = 'var(--card2)';
+    b.style.color = 'var(--muted)';
+  });
+  btn.style.background = 'var(--gold)';
+  btn.style.color = '#080E1A';
+}
+
+// copySection consolidated below
+
+function htmlToPlainText(el) {
+  // Clone so we don't disturb the DOM
+  const clone = el.cloneNode(true);
+  // Convert <br> and block divs to newlines
+  clone.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+  clone.querySelectorAll('div, p, hr').forEach(block => {
+    block.insertAdjacentText('beforebegin', '\n');
+    block.insertAdjacentText('afterend', '\n');
+  });
+  // For price schedule pre blocks, preserve as-is
+  clone.querySelectorAll('pre').forEach(pre => {
+    pre.insertAdjacentText('beforebegin', '\n');
+    pre.insertAdjacentText('afterend', '\n');
+  });
+  // Get plain text and clean up excess blank lines
+  let text = clone.textContent || '';
+  text = text.replace(/\n{3,}/g, '\n\n').trim();
+  return text;
+}
+
+function copySection(id) {
+  const el = document.getElementById(id);
+  const text = htmlToPlainText(el);
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    const orig = btn.textContent;
+    btn.textContent = '✓ Copied';
+    btn.style.background = 'var(--teal)';
+    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 1800);
+  }).catch(() => {});
+}
+
+function copyFullPackage() {
+  const sections = ['pkg-email-content','pkg-technical-content','pkg-price-content','pkg-pastperf-content','pkg-capability-content'];
+  const labels = ['CO COVER EMAIL','TECHNICAL APPROACH','PRICE SCHEDULE','PAST PERFORMANCE','CAPABILITY STATEMENT'];
+  let full = 'IRONWORKS FULL BID PACKAGE\n';
+  full += 'Ironstone Services LLC  ·  UEI: SPKKEMJHT2Y5  ·  CAGE: 21K98\n';
+  full += '='.repeat(60) + '\n\n';
+  sections.forEach((id, i) => {
+    const el = document.getElementById(id);
+    const text = htmlToPlainText(el).trim();
+    if (text && text.length > 10) {
+      full += '── ' + labels[i] + ' ──\n';
+      full += '─'.repeat(50) + '\n\n';
+      full += text + '\n\n';
+      full += '\n';
+    }
+  });
+  navigator.clipboard.writeText(full).then(() => {
+    const btn = event.target;
+    btn.textContent = '✓ Copied — Paste into Word or Email';
+    btn.style.background = 'var(--teal)';
+    btn.style.color = '#fff';
+    setTimeout(() => {
+      btn.textContent = '📋 Copy Full Package';
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2500);
+  }).catch(() => {
+    alert('Copy failed — try right-clicking the section and copying manually.');
+  });
+}
+
+function clearOutput() {
+  document.getElementById('ai-output-panel').style.display = 'none';
+  ['pkg-email-content','pkg-technical-content','pkg-price-content','pkg-pastperf-content','pkg-capability-content']
+    .forEach(id => document.getElementById(id).innerHTML = '');
+}
+
+function getBidContext() {
+  const name = document.getElementById('bb-name').value || 'Federal Service Contract';
+  const naics = document.getElementById('bb-naics').value;
+  const naicsMap = {'561720':'Janitorial Services','561730':'Grounds Maintenance / Landscaping','561740':'Carpet and Upholstery Cleaning','561990':'Other Services to Buildings'};
+  const state = document.getElementById('bb-state').value;
+  const occ = document.getElementById('bb-occupation').value;
+  const wdrate = document.getElementById('bb-wdrate').value;
+  const hw = document.getElementById('bb-hw').value;
+  const hours = document.getElementById('bb-hours').value;
+  const margin = document.getElementById('bb-margin').value;
+  const subtype = document.getElementById('bb-subtype').value;
+  const total = document.getElementById('res-total').textContent;
+  const sow = document.getElementById('ai-sow').value;
+  const pastperf = document.getElementById('ai-pastperf').value;
+  const sub = document.getElementById('ai-sub').value;
+  const setaside = document.getElementById('ai-setaside').value;
+  const isFL = state === 'FL';
+  return { contractName: name, naics, naicsDesc: naicsMap[naics] || 'Facility Services', state, occupation: occ, wdRate: wdrate, hw, hours, margin, subtype, bidPrice: total, sow, pastPerf: pastperf, subcontractor: sub, setAside: setaside, floridaMFMP: isFL };
+}
+
+function buildMasterPrompt(ctx) {
+  const flNote = ctx.floridaMFMP ? '\n- Florida MFMP transaction fee (1%) has been included in the bid price.' : '';
+  const subNote = ctx.subcontractor ? '\n- Primary Subcontractor: ' + ctx.subcontractor : '';
+  const subTypeNote = ctx.subtype === 'sub' ? 'Sub pass-through execution (Ironstone as prime, sub performs work)' : 'Direct/own-crew execution by Ironstone';
+  const sowSection = ctx.sow ? '\nSOW KEY REQUIREMENTS:\n' + ctx.sow : '\nSOW: Standard federal facility services scope for this NAICS code.';
+  const ppSection = ctx.pastPerf ? '\nPAST PERFORMANCE TO HIGHLIGHT:\n' + ctx.pastPerf : '\nPast performance: Brett Manning - 17 years Orlando facility services; Ironstone team has relevant commercial and government facility experience.';
+  return `Generate a complete federal bid package. Return ONLY valid JSON with keys: email, technical, price, pastperf, capability.
+
+CONTRACT: ${ctx.contractName}
+NAICS: ${ctx.naics} - ${ctx.naicsDesc}
+State: ${ctx.state} | Set-Aside: ${ctx.setAside}
+Occupation Code: ${ctx.occupation}
+SCA WD Rate: $${ctx.wdRate}/hr | H&W Fringe: $${ctx.hw}/hr
+Est Hours/Year: ${ctx.hours} | Margin: ${ctx.margin}%
+Execution: ${subTypeNote}${subNote}
+TOTAL BID PRICE: ${ctx.bidPrice}/year${flNote}
+${sowSection}
+${ppSection}
+
+IRONSTONE COMPANY: Ironstone Services LLC | UEI: SPKKEMJHT2Y5 | CAGE: 21K98 | SAM Active June 23 2026 | Georgia LLC | Small Business | Founders: Brett Manning (BD/pricing) + Baxter Smith (field ops) | 610 La Perla Dr Sugar Hill GA 30518
+
+JSON KEYS REQUIRED:
+"email": Transmittal email from Brett Manning to CO. Subject line first. Intent, capability intro with UEI/CAGE, why Ironstone wins (local, SCA-compliant, experienced), bid price clearly stated, professional close with contact info. 250-350 words.
+"technical": Technical approach narrative. Paragraphs: Understanding of Requirement, Technical Approach/Methodology, Staffing Plan (SCA-compliant, occupation codes cited), Quality Control Plan, Subcontractor Management. 400-500 words.
+"price": Price schedule table: Base Year breakdown (labor, fringe, overhead, margin, total), Option Years 1-4 at 3% escalation, 5-Year Total, SCA acknowledgment line. Text/ASCII table format.
+"pastperf": Past performance section. 2-3 references structured as Project/Client/Value/Period/Scope/Relevance. Use Brett commercial experience as analogous per FAR 15.305 if needed.
+"capability": One-page capability statement. Company overview, core competencies (bullets), differentiators, NAICS codes listed, key personnel, certifications, contact info.
+
+Return ONLY the JSON object. Each value must be a clean, well-formatted string using \\n for line breaks. Section headers in ALL CAPS. Prose paragraphs separated by double newlines. No raw JSON artifacts visible. No markdown backticks.`;
+}
+
+// ── CLEAN + RENDER SECTION TEXT ──
+function cleanSection(raw) {
+  if (!raw) return '';
+  // Replace literal \n escape sequences with real newlines
+  let text = raw.replace(/\\n/g, '\n').replace(/\n/g, '\n');
+  // Strip leading/trailing JSON artifacts
+  text = text.replace(/^\{"|"\}$/g, '').trim();
+  // Split into paragraphs and render
+  return text
+    .split('\n')
+    .map(line => {
+      line = line.trim();
+      if (!line) return '<br>';
+      // Section headers (all caps or === lines)
+      if (/^={3,}/.test(line) || /^-{3,}/.test(line)) return '<hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:12px 0">';
+      if (/^[A-Z][A-Z\s\-&]{8,}$/.test(line) && line.length < 60) return `<div style="font-weight:700;color:var(--gold);margin:14px 0 6px;letter-spacing:.5px;font-size:12px;text-transform:uppercase">${line}</div>`;
+      // Bullet points
+      if (/^[-•·]\s/.test(line)) return `<div style="padding:2px 0 2px 16px;position:relative;color:var(--text)"><span style="position:absolute;left:4px;color:var(--teal)">•</span>${line.replace(/^[-•·]\s/,'')}</div>`;
+      // Subject line
+      if (/^Subject:/i.test(line)) return `<div style="font-weight:700;color:var(--gold);margin-bottom:12px;font-size:14px">${line}</div>`;
+      // Regular paragraph line
+      return `<span>${line} </span>`;
+    })
+    .join('\n')
+    .replace(/(<br>\n?){2,}/g, '<br><br>');
+}
+
+async function generateBidPackage() {
+  const ctx = getBidContext();
+  if (!ctx.wdRate || ctx.bidPrice === 'Enter data →') {
+    document.getElementById('ai-status').style.display = 'flex';
+    document.getElementById('ai-status').className = 'alert alert-red';
+    document.getElementById('ai-status-text').textContent = 'Fill in the Bid Builder fields first — need WD rate, hours, and margin';
+    document.getElementById('ai-spinner').style.display = 'none';
+    return;
+  }
+  document.getElementById('ai-status').style.display = 'flex';
+  document.getElementById('ai-status').className = 'alert alert-gold';
+  document.getElementById('ai-status-text').textContent = 'IronWorks AI generating your bid package — 30 seconds...';
+  document.getElementById('ai-spinner').style.display = 'block';
+  document.getElementById('ai-output-panel').style.display = 'none';
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('generateBtn').textContent = '⏳ Generating...';
+
+  try {
+    const response = await fetch('https://sam-proxy.ironstoneservicesllc.workers.dev/anthropic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 4000,
+        system: 'You are IronWorks AI bid engine for Ironstone Services LLC (UEI: SPKKEMJHT2Y5, CAGE: 21K98, SAM Active, Georgia LLC, Small Business). Generate complete submission-ready federal bid packages. Return ONLY a valid JSON object. In JSON string values, use actual \\n for newlines. Use clear section headers in CAPS followed by newlines. Write each section as clean, readable prose — no raw escape characters visible to end users.',
+        messages: [{ role: 'user', content: buildMasterPrompt(ctx) }]
+      })
+    });
+    if (!response.ok) throw new Error('API error ' + response.status);
+    const data = await response.json();
+    const raw = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    let parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e) { parsed = { email: raw, technical:'Regenerate to parse full output.', price:'', pastperf:'', capability:'' }; }
+    document.getElementById('pkg-email-content').innerHTML = cleanSection(parsed.email || '');
+    document.getElementById('pkg-technical-content').innerHTML = cleanSection(parsed.technical || '');
+    document.getElementById('pkg-price-content').innerHTML = '<pre style="white-space:pre-wrap;font-family:monospace;font-size:12px;line-height:1.7;color:var(--text)">' + (parsed.price||'').replace(/\\n/g,'\n').replace(/\n/g,'\n') + '</pre>';
+    document.getElementById('pkg-pastperf-content').innerHTML = cleanSection(parsed.pastperf || '');
+    document.getElementById('pkg-capability-content').innerHTML = cleanSection(parsed.capability || '');
+    document.getElementById('ai-status').style.display = 'none';
+    document.getElementById('ai-output-panel').style.display = 'block';
+    showPkgTab('email', document.querySelector('.pkg-tab-btn'));
+    document.getElementById('ai-output-panel').scrollIntoView({behavior:'smooth', block:'start'});
+  } catch(err) {
+    document.getElementById('ai-status').className = 'alert alert-red';
+    document.getElementById('ai-status-text').textContent = 'Error: ' + err.message;
+    document.getElementById('ai-spinner').style.display = 'none';
+  } finally {
+    document.getElementById('generateBtn').disabled = false;
+    document.getElementById('generateBtn').textContent = '⚡ Generate Full Bid Package';
+  }
+}
+
+async function regenerateSection(section) {
+  const ctx = getBidContext();
+  const targetId = 'pkg-' + section + '-content';
+  const el = document.getElementById(targetId);
+  el.textContent = '⏳ Regenerating...';
+  try {
+    const response = await fetch('https://sam-proxy.ironstoneservicesllc.workers.dev/anthropic', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        system: 'You are IronWorks AI for Ironstone Services LLC (UEI: SPKKEMJHT2Y5, CAGE: 21K98). Return plain text only for the requested section.',
+        messages: [{ role: 'user', content: buildMasterPrompt(ctx) + '\n\nReturn ONLY the ' + section + ' section as plain text.' }]
+      })
+    });
+    const data = await response.json();
+    const rawText = data.content.filter(b => b.type === 'text').map(b => b.text).join('');
+    if (section === 'price') {
+      el.innerHTML = '<pre style="white-space:pre-wrap;font-family:monospace;font-size:12px;line-height:1.7;color:var(--text)">' + rawText.replace(/\\n/g,'\n').replace(/\n/g,'\n') + '</pre>';
+    } else {
+      el.innerHTML = cleanSection(rawText);
+    }
+  } catch(e) { el.textContent = 'Regeneration failed: ' + e.message; }
+}
+
+// ── LOAD ORLANDO PRACTICE BID ──
+function loadOrlandoBid() {
+  // Switch to Bid Builder tab
+  showTab('bidbuilder', document.querySelector('[onclick*="bidbuilder"]'));
+  // Pre-fill all fields
+  document.getElementById('bb-name').value = 'VA Orlando Carpet Cleaning — 36C24825N0905 (PRACTICE)';
+  document.getElementById('bb-naics').value = '561740';
+  document.getElementById('bb-state').value = 'FL';
+  document.getElementById('bb-occupation').value = '14045 — Carpet/Upholstery Cleaner';
+  document.getElementById('bb-wdrate').value = '17.20';
+  document.getElementById('bb-hw').value = '5.36';
+  document.getElementById('bb-hours').value = '9000';
+  document.getElementById('bb-margin').value = '25';
+  document.getElementById('bb-subtype').value = 'sub';
+  // Trigger FL warning and recalc
+  document.getElementById('bb-fl-warning').style.display = 'block';
+  bbCalc();
+}
+
+// Init
+bbCalc();
+</script>
+</body>
+</html>
