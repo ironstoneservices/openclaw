@@ -82,13 +82,13 @@ async function fetchSAMOpps(naics, state) {
     postedFrom: pf,
     limit: '25',
     active: 'Yes',
-    typeOfSetAside: '',
   });
 
-  if (state) params.append('state', state);
+  if (state) params.append('placeOfPerformanceState', state);
 
   try {
-    const res = await fetch(`https://api.sam.gov/opportunities/v2/search?${params}`);
+    const proxyUrl = 'https://sam-proxy.ironstoneservicesllc.workers.dev?url=' + encodeURIComponent(`https://api.sam.gov/opportunities/v2/search?${params}`);
+    const res = await fetch(proxyUrl);
     if (!res.ok) { console.error(`SAM ${res.status} ${naics}/${state}`); return []; }
     const data = await res.json();
     return data.opportunitiesData || [];

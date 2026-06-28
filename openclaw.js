@@ -113,7 +113,7 @@ async function processOpportunity(opp, dryRun=false) {
   }
 }
 
-import { scanContracts } from './usaspending.js';
+// import { scanContracts } from './usaspending.js';
 import { runSAMScan } from './samclaw.js';
 
 async function runCycle(options={}) {
