@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IronGate OS — Federal Contracting Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0F172A;
+  --navy-mid:#1E3A5F;
+  --gold:#C2A75C;
+  --gold-light:#D4B96A;
+  --silver:#A7A9AC;
+  --silver-light:#D4D6D8;
+  --silver-dark:#6B6E71;
+  --surface:#F8FAFC;
+  --surface-mid:#F1F5F9;
+  --border:#E2E8F0;
+  --border-mid:#CBD5E1;
+  --white:#FFFFFF;
+  --text:#0F172A;
+  --text-mid:#475569;
+  --text-light:#94A3B8;
+  --green:#10B981;
+  --red:#EF4444;
+  --amber:#F59E0B;
+  --blue:#3B82F6;
+  --locked:#94A3B8;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Barlow',sans-serif;color:var(--text);background:var(--white);overflow-x:hidden;min-height:100vh}
+
+/* ── TOP BAR ── */
+.topbar{
+  background:var(--navy);
+  height:56px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 24px;
+  position:sticky;
+  top:0;
+  z-index:100;
+  border-bottom:1px solid rgba(194,167,92,0.2);
+}
+.topbar-left{display:flex;align-items:center;gap:16px}
+.topbar-logo{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);letter-spacing:3px;line-height:1}
+.topbar-logo span{color:var(--gold)}
+.topbar-tag{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--silver-dark);border-left:1px solid rgba(255,255,255,0.1);padding-left:16px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.mode-toggle{display:flex;align-items:center;gap:0;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:6px;overflow:hidden}
+.mode-btn{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:10px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color:var(--silver-dark);
+  padding:6px 14px;
+  cursor:pointer;
+  border:none;
+  background:transparent;
+  transition:all .2s;
+  white-space:nowrap;
+}
+.mode-btn.active{background:var(--gold);color:var(--navy);font-weight:700}
+.sam-badge{
+  display:flex;align-items:center;gap:6px;
+  font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--green);border:1px solid rgba(16,185,129,0.3);padding:4px 10px;border-radius:4px;
+}
+.sam-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+
+/* ── STEP NAV ── */
+.step-nav{
+  background:var(--white);
+  border-bottom:2px solid var(--border);
+  padding:0 24px;
+  display:flex;
+  align-items:stretch;
+  gap:0;
+  overflow-x:auto;
+}
+.step-tab{
+  display:flex;align-items:center;gap:8px;
+  padding:14px 24px;
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--text-light);
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+  transition:all .2s;
+  white-space:nowrap;
+  border:none;background:transparent;
+}
+.step-tab:hover:not(.locked){color:var(--text-mid);border-bottom-color:var(--border-mid)}
+.step-tab.active{color:var(--navy);border-bottom-color:var(--gold)}
+.step-tab.locked{cursor:not-allowed;opacity:0.4}
+.step-num{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;
+  background:var(--surface-mid);color:var(--text-light);
+  flex-shrink:0;transition:all .2s;
+}
+.step-tab.active .step-num{background:var(--gold);color:var(--navy)}
+.step-tab.done .step-num{background:var(--green);color:white}
+.step-tab.done{color:var(--text-mid)}
+.lock-icon{font-size:10px;opacity:0.6}
+
+/* ── MAIN ── */
+.main{max-width:1100px;margin:0 auto;padding:32px 24px 80px}
+
+/* ── MODE BANNER ── */
+.mode-banner{
+  background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 100%);
+  border-radius:12px;
+  padding:20px 28px;
+  display:flex;align-items:center;gap:20px;
+  margin-bottom:28px;
+  border:1px solid rgba(194,167,92,0.2);
+}
+.mode-icon{font-size:32px;flex-shrink:0}
+.mode-title{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--white);letter-spacing:2px}
+.mode-desc{font-size:13px;color:rgba(255,255,255,0.5);margin-top:2px;font-family:'Barlow',sans-serif}
+
+/* ── SECTION HEADER ── */
+.section-header{margin-bottom:20px}
+.section-eyebrow{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:5px;text-transform:uppercase;
+  color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:10px;
+}
+.section-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(to right,rgba(194,167,92,0.3),transparent)}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--navy)}
+.section-sub{font-size:14px;color:var(--text-mid);margin-top:4px}
+
+/* ── CARDS ── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px;transition:all .2s}
+.card:hover{border-color:var(--border-mid);box-shadow:0 4px 16px rgba(15,23,42,0.06)}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+
+/* ── CONTRACT CARD ── */
+.contract-card{
+  background:var(--white);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;transition:all .2s;
+}
+.contract-card:hover{border-color:var(--navy-mid);box-shadow:0 4px 20px rgba(15,23,42,0.08);transform:translateY(-1px)}
+.contract-top{padding:18px 20px 14px}
+.contract-agency{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--silver-dark);margin-bottom:6px;
+}
+.contract-name{font-weight:600;font-size:15px;color:var(--navy);line-height:1.35;margin-bottom:12px}
+.contract-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tag{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  padding:3px 10px;border-radius:4px;
+}
+.tag-naics{background:#EEF2FF;color:#4338CA}
+.tag-setaside{background:#FEF3C7;color:#92400E}
+.tag-value{background:#F0FDF4;color:#166534}
+.tag-distance{background:#F8FAFC;color:var(--silver-dark);border:1px solid var(--border)}
+.contract-meta{display:flex;gap:16px}
+.meta-item{display:flex;flex-direction:column;gap:2px}
+.meta-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light)}
+.meta-val{font-size:13px;font-weight:600;color:var(--text)}
+.due-urgent{color:var(--red)!important}
+.due-soon{color:var(--amber)!important}
+.contract-bottom{
+  padding:12px 20px;
+  border-top:1px solid var(--border);
+  background:var(--surface);
+  display:flex;align-items:center;justify-content:space-between;
+}
+
+/* ── BUTTONS ── */
+.btn{
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;
+  padding:10px 22px;border-radius:6px;border:none;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;
+}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold-light);box-shadow:0 4px 12px rgba(194,167,92,0.3)}
+.btn-navy{background:var(--navy);color:var(--white)}
+.btn-navy:hover{background:#1e293b}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border-mid)}
+.btn-outline:hover{border-color:var(--navy);background:var(--surface)}
+.btn-ghost{background:transparent;color:var(--text-mid);border:none;padding:8px 14px;font-size:11px}
+.btn-ghost:hover{color:var(--navy)}
+.btn-green{background:var(--green);color:white}
+.btn-green:hover{background:#059669}
+.btn-sm{padding:7px 14px;font-size:10px}
+.btn-lg{padding:14px 32px;font-size:13px}
+.btn-full{width:100%;justify-content:center}
+
+/* ── PRICE STEP ── */
+.price-panel{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+@media(max-width:700px){.price-panel{grid-template-columns:1fr}}
+.form-group{margin-bottom:18px}
+.form-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--text-mid);margin-bottom:6px;display:block;
+}
+.form-input{
+  width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:6px;
+  font-family:'Barlow',sans-serif;font-size:14px;color:var(--text);background:var(--white);
+  transition:all .2s;outline:none;
+}
+.form-input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(15,23,42,0.06)}
+.form-input[readonly]{background:var(--surface);color:var(--text-mid)}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394A3B8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+.bid-floor-box{
+  background:linear-gradient(135deg,var(--navy) 0%,#1a2f4a 100%);
+  border-radius:10px;padding:28px;text-align:center;
+}
+.bid-floor-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px}
+.bid-floor-num{font-family:'Bebas Neue',sans-serif;font-size:56px;color:var(--gold);letter-spacing:2px;line-height:1}
+.bid-floor-sub{font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;font-family:'Barlow',sans-serif}
+.breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+.breakdown-row:last-child{border-bottom:none}
+.breakdown-label{font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.5)}
+.breakdown-val{font-size:13px;font-weight:600;color:var(--white)}
+.breakdown-val.gold{color:var(--gold)}
+
+/* ── BID STEP ── */
+.bid-section{margin-bottom:24px}
+.bid-section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--border);
+}
+.bid-section-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;color:var(--navy)}
+.bid-content{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;
+  font-size:13px;line-height:1.7;color:var(--text-mid);font-family:'Barlow',sans-serif;
+  white-space:pre-wrap;min-height:60px;
+}
+.bid-content.generating{
+  display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text-light);font-style:italic;
+}
+.generating-dots::after{content:'...';animation:dots 1.2s infinite}
+@keyframes dots{0%{content:'.'}40%{content:'..'}80%{content:'...'}100%{content:'.'}}
+.copy-btn{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;
+  color:var(--text-mid);background:var(--white);border:1px solid var(--border);padding:5px 12px;
+  border-radius:4px;cursor:pointer;transition:all .2s;
+}
+.copy-btn:hover{color:var(--navy);border-color:var(--navy-mid)}
+.copy-btn.copied{color:var(--green);border-color:var(--green)}
+
+/* ── WIN STEP ── */
+.win-input-row{display:flex;gap:12px;max-width:480px;margin:0 auto 24px}
+.celebration{
+  text-align:center;padding:48px 24px;
+  animation:fadeIn .5s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.celebration-emoji{font-size:72px;margin-bottom:16px;display:block;animation:bounce .6s ease}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+.celebration-title{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--navy);letter-spacing:2px;margin-bottom:8px}
+.celebration-title span{color:var(--gold)}
+.celebration-sub{font-size:15px;color:var(--text-mid);margin-bottom:28px}
+.confetti-bar{height:4px;background:linear-gradient(90deg,var(--gold),var(--navy),var(--gold),var(--navy),var(--gold));background-size:200% 100%;animation:shift 2s linear infinite;border-radius:2px;margin-bottom:28px}
+@keyframes shift{0%{background-position:200% 0}100%{background-position:0 0}}
+
+/* ── MANAGE STEP ── */
+.manage-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:700px){.manage-grid{grid-template-columns:1fr}}
+.manage-card{background:var(--white);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.manage-card-head{
+  padding:14px 18px;background:var(--navy);
+  display:flex;align-items:center;gap:10px;
+}
+.manage-card-head-title{font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--white)}
+.manage-card-body{padding:16px 18px}
+.sub-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border)}
+.sub-row:last-child{border-bottom:none}
+.sub-name{font-weight:600;font-size:13px;color:var(--text)}
+.sub-trade{font-size:11px;color:var(--text-light);margin-top:1px}
+.status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.status-dispatched{background:var(--green)}
+.status-pending{background:var(--amber)}
+.status-available{background:var(--silver-light)}
+.task-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)}
+.task-row:last-child{border-bottom:none}
+.task-check{width:16px;height:16px;border-radius:3px;border:1.5px solid var(--border-mid);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all .2s}
+.task-check.checked{background:var(--green);border-color:var(--green);color:white}
+.task-label{font-size:13px;color:var(--text);flex:1}
+.task-label.done{color:var(--text-light);text-decoration:line-through}
+.option-bar{display:flex;align-items:center;gap:12px;padding:10px 0}
+.option-label{font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-mid);flex-shrink:0;width:60px}
+.option-track{flex:1;height:6px;background:var(--surface-mid);border-radius:3px;overflow:hidden}
+.option-fill{height:100%;border-radius:3px;background:var(--gold);transition:width .5s}
+.option-days{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--text-mid)}
+
+/* ── LOCKED OVERLAY ── */
+.locked-overlay{
+  min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:48px;
+}
+.locked-icon{font-size:48px;margin-bottom:16px;opacity:0.3}
+.locked-title{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--text-light);letter-spacing:2px;margin-bottom:8px}
+.locked-sub{font-size:14px;color:var(--text-light);max-width:320px}
+
+/* ── PIPELINE BAR ── */
+.pipeline{display:flex;align-items:center;gap:0;margin-bottom:28px;overflow-x:auto}
+.pipe-step{
+  flex:1;min-width:80px;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 8px;position:relative;
+}
+.pipe-step::after{
+  content:'';position:absolute;right:-1px;top:50%;transform:translateY(-50%);
+  width:20px;height:2px;background:var(--border);z-index:1;
+}
+.pipe-step:last-child::after{display:none}
+.pipe-circle{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+  background:var(--surface-mid);color:var(--text-light);border:2px solid var(--border);
+  transition:all .3s;z-index:2;position:relative;
+}
+.pipe-step.active .pipe-circle{background:var(--gold);border-color:var(--gold);color:var(--navy)}
+.pipe-step.done .pipe-circle{background:var(--green);border-color:var(--green);color:white}
+.pipe-step.done::after{background:var(--green)}
+.pipe-label{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light);text-align:center}
+.pipe-step.active .pipe-label{color:var(--navy);font-weight:700}
+.pipe-step.done .pipe-label{color:var(--green)}
+
+/* ── ALERTS ── */
+.alert{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;border-radius:8px;margin-bottom:12px;border:1px solid;
+}
+.alert-green{background:#F0FDF4;border-color:#BBF7D0;color:#166534}
+.alert-amber{background:#FFFBEB;border-color:#FDE68A;color:#92400E}
+.alert-blue{background:#EFF6FF;border-color:#BFDBFE;color:#1E40AF}
+.alert-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+.alert-text{font-size:13px;font-weight:500}
+
+/* ── TABS within step ── */
+.inner-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-bottom:20px}
+.inner-tab{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:2px;text-transform:uppercase;font-weight:700;
+  padding:10px 18px;color:var(--text-light);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+  background:transparent;border-top:none;border-left:none;border-right:none;transition:all .2s;
+}
+.inner-tab.active{color:var(--navy);border-bottom-color:var(--gold)}
+.inner-tab:hover:not(.active){color:var(--text-mid)}
+
+/* ── MISC ── */
+.divider{height:1px;background:var(--border);margin:20px 0}
+.text-gold{color:var(--gold)}
+.text-navy{color:var(--navy)}
+.text-light{color:var(--text-light)}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.flex-gap{display:flex;align-items:center;gap:10px}
+.mt-4{margin-top:16px}
+.mt-6{margin-top:24px}
+.mb-4{margin-bottom:16px}
+.hidden{display:none!important}
+.find-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.filter-btn{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;text-transform:uppercase;
+  padding:6px 14px;border-radius:20px;border:1.5px solid var(--border-mid);background:var(--white);
+  color:var(--text-mid);cursor:pointer;transition:all .2s;
+}
+.filter-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.empty-state{
+  text-align:center;padding:48px 24px;
+  font-size:14px;color:var(--text-light);
+}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+
+@media(max-width:600px){
+  .topbar-tag{display:none}
+  .topbar{padding:0 16px}
+  .main{padding:20px 16px 60px}
+  .step-tab{padding:12px 14px}
+  .price-panel{grid-template-columns:1fr}
+  .manage-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div class="topbar-left">
+    <div class="topbar-logo">Iron<span>Gate</span> OS</div>
+    <div class="topbar-tag">Federal Contracting Platform</div>
+  </div>
+  <div class="topbar-right">
+    <div class="mode-toggle">
+      <button class="mode-btn active" onclick="setMode('prime')">⚡ Prime Mode</button>
+      <button class="mode-btn" onclick="setMode('sub')">🔨 Operator Mode</button>
+    </div>
+    <div class="sam-badge"><span class="sam-dot"></span>SAM Active</div>
+  </div>
+</header>
+
+<!-- STEP NAV -->
+<nav class="step-nav" id="stepNav">
+  <button class="step-tab active" data-step="find" onclick="goStep('find')">
+    <span class="step-num" id="num-find">1</span>FIND
+  </button>
+  <button class="step-tab" data-step="price" onclick="goStep('price')">
+    <span class="step-num" id="num-price">2</span>PRICE
+  </button>
+  <button class="step-tab" data-step="bid" onclick="goStep('bid')">
+    <span class="step-num" id="num-bid">3</span>BID
+  </button>
+  <button class="step-tab" data-step="win" onclick="goStep('win')">
+    <span class="step-num" id="num-win">4</span>WIN
+  </button>
+  <button class="step-tab locked" data-step="manage" id="tab-manage" onclick="goStep('manage')">
+    <span class="step-num" id="num-manage">5</span>MANAGE <span class="lock-icon" id="lock-icon">🔒</span>
+  </button>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- ══ STEP: FIND ══ -->
+  <section id="step-find">
+    <div class="mode-banner" id="modeBanner">
+      <div class="mode-icon" id="modeIcon">⚡</div>
+      <div>
+        <div class="mode-title" id="modeTitle">Prime Mode — Find &amp; Win Contracts</div>
+        <div class="mode-desc" id="modeDesc">You source the contract, win the bid, deploy subs, keep the margin. Full stack federal prime.</div>
+      </div>
+    </div>
+
+    <div class="flex-between mb-4">
+      <div class="section-header" style="margin-bottom:0">
+        <div class="section-eyebrow">SAM.gov Live Feed</div>
+        <div class="section-title">Open Opportunities</div>
+      </div>
+      <button class="btn btn-navy btn-sm" onclick="loadContracts()">↻ Refresh</button>
+    </div>
+
+    <div class="find-filters">
+      <button class="filter-btn active" onclick="filterContracts('all',this)">All NAICS</button>
+      <button class="filter-btn" onclick="filterContracts('561720',this)">561720 Janitorial</button>
+      <button class="filter-btn" onclick="filterContracts('561730',this)">561730 Grounds</button>
+      <button class="filter-btn" onclick="filterContracts('561740',this)">561740 Carpet</button>
+      <button class="filter-btn" onclick="filterContracts('561990',this)">561990 Other Services</button>
+    </div>
+
+    <div class="card-grid" id="contractGrid">
+      <!-- populated by JS -->
+    </div>
+  </section>
+
+  <!-- ══ STEP: PRICE ══ -->
+  <section id="step-price" class="hidden">
+    <div class="section-header">
+      <div class="section-eyebrow">Wage Determination Engine</div>
+      <div class="section-title">Price This Contract</div>
+      <div class="section-sub">SCA-compliant bid floor. Auto-loaded from DOL by state and NAICS.</div>
+    </div>
+
+    <div class="price-panel">
+      <!-- LEFT: Inputs -->
+      <div>
+        <div class="card" style="padding:24px">
+          <div class="form-group">
+            <label class="form-label">Contract Name</label>
+            <input class="form-input" id="p-name" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">NAICS Code</label>
+            <select class="form-input form-select" id="p-naics" onchange="updateWD()">
+              <option value="561720">561720 — Janitorial Services</option>
+              <option value="561730">561730 — Landscaping Services</option>
+              <option value="561740">561740 — Carpet &amp; Upholstery Cleaning</option>
+              <option value="561990">561990 — Other Services to Buildings</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <select class="form-input form-select" id="p-state" onchange="updateWD()">
+              <option value="GA">Georgia</option>
+              <option value="FL">Florida</option>
+              <option value="TN">Tennessee</option>
+              <option value="SC">South Carolina</option>
+              <option value="NC">North Carolina</option>
+              <option value="VA">Virginia</option>
+              <option value="AL">Alabama</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">DOL Wage Determination Rate ($/hr) <span id="wd-badge" style="float:right;font-size:9px;color:var(--green);letter-spacing:1px">AUTO-LOADED</span></label>
+            <input class="form-input" id="p-wd" type="number" step="0.01" value="16.20" onchange="calcBidFloor()">
+          </div>
+          <div class="form-group">
+            <label class="form-label">H&amp;W Fringe ($/hr)</label>
+            <input class="form-input" id="p-fringe" type="number" step="0.01" value="4.57" onchange="calcBidFloor()">
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Hours / Year</label>
+              <input class="form-input" id="p-hours" type="number" value="2080" onchange="calcBidFloor()">
+            </div>
+            <div class="form-group" style="margin-bottom:0">
+              <label class="form-label">Target Margin %</label>
+              <input class="form-input" id="p-margin" type="number" value="25" min="1" max="50" onchange="calcBidFloor()">
+            </div>
+          </div>
+          <div id="fl-notice" class="alert alert-amber mt-4 hidden">
+            <span class="alert-icon">⚠️</span>
+            <span class="alert-text">Florida MFMP adds 1% transaction fee — already built into bid floor.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Output -->
+      <div>
+        <div class="bid-floor-box" style="margin-bottom:16px">
+          <div class="bid-floor-label">Annual Bid Floor</div>
+          <div class="bid-floor-num" id="floor-total">$0</div>
+          <div class="bid-floor-sub" id="floor-monthly"></div>
+        </div>
+        <div class="card" style="padding:0;background:linear-gradient(135deg,var(--navy) 0%,#1a2f4a 100%);border:none">
+          <div style="padding:16px 20px">
+            <div class="breakdown-row">
+              <span class="breakdown-label">Base Labor (WD Rate × Hours)</span>
+              <span class="breakdown-val" id="br-labor">—</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">H&amp;W Fringe</span>
+              <span class="breakdown-val" id="br-fringe">—</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Total Labor Cost</span>
+              <span class="breakdown-val" id="br-total-labor">—</span>
+            </div>
+            <div class="breakdown-row">
+              <span class="breakdown-label">Margin Target (<span id="br-margin-pct">25</span>%)</span>
+              <span class="breakdown-val gold" id="br-margin">—</span>
+            </div>
+            <div class="breakdown-row" id="br-fl-row" style="display:none">
+              <span class="breakdown-label">FL MFMP Fee (1%)</span>
+              <span class="breakdown-val" id="br-fl">—</span>
+            </div>
+            <div class="breakdown-row" style="border-bottom:none">
+              <span class="breakdown-label" style="color:rgba(255,255,255,0.8);font-weight:700">Bid Floor</span>
+              <span class="breakdown-val gold" style="font-size:16px" id="br-floor">—</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4">
+          <button class="btn btn-gold btn-full btn-lg" onclick="goStep('bid')">Build Bid Package →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ STEP: BID ══ -->
+  <section id="step-bid" class="hidden">
+    <div class="section-header">
+      <div class="section-eyebrow">AI Bid Generator</div>
+      <div class="section-title">Build Your Bid Package</div>
+      <div class="section-sub">Complete federal proposal package — ready to submit.</div>
+    </div>
+
+    <div class="alert alert-blue mb-4">
+      <span class="alert-icon">🤖</span>
+      <div class="alert-text">AI will generate your complete package using Ironstone's company data, past performance, and the contract details you priced. Review each section before submitting.</div>
+    </div>
+
+    <div style="display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+      <button class="btn btn-gold btn-lg" onclick="generateBid()" id="genBtn">⚡ Generate Complete Package</button>
+      <button class="btn btn-outline" onclick="exportBid()" id="exportBtn">↓ Export All Sections</button>
+    </div>
+
+    <!-- CO Email -->
+    <div class="bid-section">
+      <div class="bid-section-header">
+        <div class="bid-section-title">📧 CO Introductory Email</div>
+        <button class="copy-btn" onclick="copySection('co-email',this)">Copy</button>
+      </div>
+      <div class="bid-content" id="co-email">Generate your package to see this section.</div>
+    </div>
+
+    <!-- Technical Approach -->
+    <div class="bid-section">
+      <div class="bid-section-header">
+        <div class="bid-section-title">📋 Technical Approach</div>
+        <button class="copy-btn" onclick="copySection('tech-approach',this)">Copy</button>
+      </div>
+      <div class="bid-content" id="tech-approach">Generate your package to see this section.</div>
+    </div>
+
+    <!-- Price Schedule -->
+    <div class="bid-section">
+      <div class="bid-section-header">
+        <div class="bid-section-title">💰 Price Schedule</div>
+        <button class="copy-btn" onclick="copySection('price-schedule',this)">Copy</button>
+      </div>
+      <div class="bid-content" id="price-schedule">Generate your package to see this section.</div>
+    </div>
+
+    <!-- Past Performance -->
+    <div class="bid-section">
+      <div class="bid-section-header">
+        <div class="bid-section-title">🏆 Past Performance Summary</div>
+        <button class="copy-btn" onclick="copySection('past-perf',this)">Copy</button>
+      </div>
+      <div class="bid-content" id="past-perf">Generate your package to see this section.</div>
+    </div>
+
+    <!-- Capability -->
+    <div class="bid-section">
+      <div class="bid-section-header">
+        <div class="bid-section-title">🏢 Company Capability Statement</div>
+        <button class="copy-btn" onclick="copySection('capability',this)">Copy</button>
+      </div>
+      <div class="bid-content" id="capability">Generate your package to see this section.</div>
+    </div>
+
+    <div class="mt-6" style="text-align:center">
+      <button class="btn btn-green btn-lg" onclick="goStep('win')">Mark as Submitted → Go to WIN</button>
+    </div>
+  </section>
+
+  <!-- ══ STEP: WIN ══ -->
+  <section id="step-win" class="hidden">
+    <div class="section-header">
+      <div class="section-eyebrow">Contract Award</div>
+      <div class="section-title">Mark the Win</div>
+      <div class="section-sub">When you receive your award notice, mark it won here. MANAGE unlocks automatically.</div>
+    </div>
+
+    <div id="win-form">
+      <div style="max-width:480px;margin:0 auto">
+        <div class="card" style="padding:28px;margin-bottom:20px">
+          <div class="form-group">
+            <label class="form-label">Contract Name</label>
+            <input class="form-input" id="w-name" readonly>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Award Value ($)</label>
+            <input class="form-input" id="w-value" type="number" placeholder="Enter total award value">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Period of Performance Start</label>
+            <input class="form-input" id="w-start" type="date">
+          </div>
+          <div class="form-group" style="margin-bottom:0">
+            <label class="form-label">Contracting Officer</label>
+            <input class="form-input" id="w-co" placeholder="CO name and contact">
+          </div>
+        </div>
+        <button class="btn btn-green btn-full btn-lg" onclick="markWon()" style="padding:18px">🏆 Mark as Won — Unlock MANAGE</button>
+      </div>
+    </div>
+
+    <div id="win-celebration" class="hidden">
+      <div class="confetti-bar"></div>
+      <div class="celebration">
+        <span class="celebration-emoji">🏆</span>
+        <div class="celebration-title">CONTRACT <span>WON</span></div>
+        <div class="celebration-sub" id="cel-sub">Ironstone Services LLC — first federal win. MANAGE is now unlocked.</div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn btn-gold btn-lg" onclick="goStep('manage')">Open MANAGE →</button>
+          <button class="btn btn-outline" onclick="goStep('find')">Find Next Contract</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ STEP: MANAGE ══ -->
+  <section id="step-manage" class="hidden">
+    <div id="manage-locked" class="locked-overlay hidden">
+      <div class="locked-icon">🔒</div>
+      <div class="locked-title">Locked Until First Win</div>
+      <div class="locked-sub">Mark a contract Won in the WIN step to unlock your contract management dashboard.</div>
+    </div>
+
+    <div id="manage-content" class="hidden">
+      <div class="section-header">
+        <div class="section-eyebrow">Contract Management</div>
+        <div class="section-title">Manage Your Contract</div>
+        <div class="section-sub" id="manage-contract-name"></div>
+      </div>
+
+      <div class="manage-grid">
+
+        <!-- Option Year Tracker -->
+        <div class="manage-card">
+          <div class="manage-card-head">
+            <span>📅</span>
+            <div class="manage-card-head-title">Option Year Tracker</div>
+          </div>
+          <div class="manage-card-body">
+            <div class="option-bar">
+              <span class="option-label">Base</span>
+              <div class="option-track"><div class="option-fill" style="width:40%"></div></div>
+              <span class="option-days">Day 146 / 365</span>
+            </div>
+            <div class="option-bar" style="opacity:0.5">
+              <span class="option-label">Opt 1</span>
+              <div class="option-track"><div class="option-fill" style="width:0%"></div></div>
+              <span class="option-days">Not Started</span>
+            </div>
+            <div class="option-bar" style="opacity:0.5">
+              <span class="option-label">Opt 2</span>
+              <div class="option-track"><div class="option-fill" style="width:0%"></div></div>
+              <span class="option-days">Not Started</span>
+            </div>
+            <div class="divider" style="margin:12px 0"></div>
+            <div class="alert alert-amber" style="margin:0">
+              <span class="alert-icon">⚠️</span>
+              <span class="alert-text">219 days until Option 1 renewal notice due. Set CO meeting.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sub Dispatch -->
+        <div class="manage-card">
+          <div class="manage-card-head">
+            <span>🔧</span>
+            <div class="manage-card-head-title">Sub Dispatch</div>
+          </div>
+          <div class="manage-card-body">
+            <div class="sub-row">
+              <div>
+                <div class="sub-name">Naturally Clean Janitorial</div>
+                <div class="sub-trade">Janitorial — Ocoee, TN</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="status-dot status-dispatched"></div>
+                <span style="font-size:11px;color:var(--green);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px">On Site</span>
+              </div>
+            </div>
+            <div class="sub-row">
+              <div>
+                <div class="sub-name">Blade &amp; Branch LLC</div>
+                <div class="sub-trade">Grounds — Sugar Hill, GA</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="status-dot status-pending"></div>
+                <span style="font-size:11px;color:var(--amber);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px">Pending</span>
+              </div>
+            </div>
+            <div class="sub-row">
+              <div>
+                <div class="sub-name">SGS Landscape LLC</div>
+                <div class="sub-trade">Grounds — Sugar Hill, GA</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:8px">
+                <div class="status-dot status-available"></div>
+                <span style="font-size:11px;color:var(--text-light);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px">Available</span>
+              </div>
+            </div>
+            <div class="mt-4">
+              <button class="btn btn-outline btn-full btn-sm">+ Dispatch Sub</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Compliance Checklist -->
+        <div class="manage-card">
+          <div class="manage-card-head">
+            <span>✅</span>
+            <div class="manage-card-head-title">SOW Compliance Checklist</div>
+          </div>
+          <div class="manage-card-body" id="checklist-body">
+            <!-- populated by JS -->
+          </div>
+        </div>
+
+        <!-- CO Reporting -->
+        <div class="manage-card">
+          <div class="manage-card-head">
+            <span>📊</span>
+            <div class="manage-card-head-title">CO Reporting</div>
+          </div>
+          <div class="manage-card-body">
+            <div class="form-group">
+              <label class="form-label">Reporting Period</label>
+              <select class="form-input form-select" style="font-size:12px">
+                <option>June 2026</option>
+                <option>May 2026</option>
+              </select>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+              <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--green)">12</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light)">Visits Complete</div>
+              </div>
+              <div style="text-align:center;padding:12px;background:var(--surface);border-radius:6px">
+                <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--amber)">0</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--text-light)">Incidents</div>
+              </div>
+            </div>
+            <button class="btn btn-gold btn-full btn-sm" onclick="generateCOReport()">Generate CO Report →</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+/* ══════════════════════════════════════════════
+   IRONGATE OS — Core State
+═══════════════════════════════════════════════ */
+
+const STATE = {
+  mode: 'prime',
+  currentStep: 'find',
+  activeContract: null,
+  bidFloor: 0,
+  contractWon: false,
+  wonContract: null,
+  wonValue: 0,
+  filterNAICS: 'all',
+  generatedBid: {},
+  checklistItems: {}
+};
+
+// Ironstone company data — hardcoded
+const COMPANY = {
+  name: 'Ironstone Services LLC',
+  uei: 'SPKKEMJHT2Y5',
+  cage: '21K98',
+  samStatus: 'Active — June 23, 2026',
+  address: '610 La Perla Dr, Sugar Hill, GA 30518',
+  website: 'ironstoneservicesllc.com',
+  principals: 'Brett Manning & Baxter Smith',
+  naics: ['561720','561730','561740','561990'],
+  state: 'GA'
+};
+
+// WD rates by state/NAICS (DOL SCA approximations)
+const WD_RATES = {
+  '561720': {GA:16.20,FL:15.80,TN:14.90,SC:14.50,NC:15.10,VA:17.40,AL:14.20},
+  '561730': {GA:15.80,FL:15.50,TN:14.60,SC:14.20,NC:14.80,VA:16.90,AL:13.90},
+  '561740': {GA:17.40,FL:17.10,TN:16.20,SC:15.90,NC:16.50,VA:18.60,AL:15.80},
+  '561990': {GA:16.80,FL:16.40,TN:15.50,SC:15.10,NC:15.70,VA:17.90,AL:14.80}
+};
+
+// Sample live contracts
+const CONTRACTS = [
+  {id:'c1',naics:'561730',agency:'USDA Forest Service',name:'Ocoee Ranger District Janitorial Services',state:'TN',setAside:'Total Small Business',due:'2026-07-02',daysLeft:4,distance:'~3 hr',estimatedValue:'$14,000–$18,000',solNum:'12444026Q0100',co:'Melody Flores',coEmail:'melody.flores@usda.gov'},
+  {id:'c2',naics:'561720',agency:'Dept of Veterans Affairs',name:'Florida VA Medical Centers Carpet Cleaning Re-Compete',state:'FL',setAside:'Total Small Business',due:'2026-08-31',daysLeft:64,distance:'~7 hr',estimatedValue:'$180,000–$220,000',solNum:'36C24825N0905',co:'Kurt Kramer',coEmail:'kurt.kramer@va.gov'},
+  {id:'c3',naics:'561990',agency:'National Cemetery Administration',name:'Georgia National Cemetery Inscription Services',state:'GA',setAside:'Total Small Business',due:'2026-07-23',daysLeft:25,distance:'~35 min',estimatedValue:'$175,000–$220,000',solNum:'36C78626Q0061',co:'Weston Worsham',coEmail:'weston.worsham@va.gov'},
+  {id:'c4',naics:'561730',agency:'National Cemetery Administration',name:'Georgia National Cemetery Grounds Maintenance Re-Compete',state:'GA',setAside:'TBD — Verify with CO',due:'2026-09-15',daysLeft:79,distance:'~30 min',estimatedValue:'$200,000–$245,000',solNum:'36C78622N0408',co:'Weston Worsham',coEmail:'weston.worsham@va.gov'},
+  {id:'c5',naics:'561720',agency:'NPS — Great Smoky Mountains',name:'GRSM Custodial Services',state:'TN',setAside:'Total Small Business',due:'2026-07-06',daysLeft:8,distance:'~4 hr',estimatedValue:'$80,000–$110,000',solNum:'140P5326Q0027',co:'Marilia Mateo',coEmail:''},
+  {id:'c6',naics:'561720',agency:'APHIS — Mount Dora Field Office',name:'Mount Dora Janitorial Services',state:'FL',setAside:'Total Small Business',due:'2026-07-15',daysLeft:17,distance:'~7 hr',estimatedValue:'$12,000–$20,000',solNum:'12639526Q0159',co:'TBD',coEmail:''},
+];
+
+/* ══ INIT ══ */
+document.addEventListener('DOMContentLoaded', () => {
+  loadContracts();
+  calcBidFloor();
+  buildChecklist();
+});
+
+/* ══ MODE TOGGLE ══ */
+function setMode(mode) {
+  STATE.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach((b,i) => {
+    b.classList.toggle('active', (mode==='prime' && i===0)||(mode==='sub' && i===1));
+  });
+  const banner = {
+    prime: {icon:'⚡',title:'Prime Mode — Find &amp; Win Contracts',desc:'You source the contract, win the bid, deploy subs, keep the margin. Full stack federal prime.'},
+    sub:   {icon:'🔨',title:'Operator Mode — Find Work Near You',desc:'You do the work. Find sub opportunities, bid direct, build your pipeline. No prime needed.'}
+  }[mode];
+  document.getElementById('modeIcon').textContent = banner.icon;
+  document.getElementById('modeTitle').innerHTML = banner.title;
+  document.getElementById('modeDesc').textContent = banner.desc;
+}
+
+/* ══ STEP NAVIGATION ══ */
+function goStep(step) {
+  if (step === 'manage' && !STATE.contractWon) return;
+  STATE.currentStep = step;
+  document.querySelectorAll('[id^="step-"]').forEach(s => s.classList.add('hidden'));
+  document.getElementById('step-' + step).classList.remove('hidden');
+  document.querySelectorAll('.step-tab').forEach(t => {
+    t.classList.remove('active');
+    if (t.dataset.step === step) t.classList.add('active');
+  });
+  if (step === 'price' && STATE.activeContract) {
+    populatePriceStep();
+  }
+  if (step === 'win' && STATE.activeContract) {
+    document.getElementById('w-name').value = STATE.activeContract.name;
+  }
+  if (step === 'manage') {
+    document.getElementById('manage-locked').classList.add('hidden');
+    document.getElementById('manage-content').classList.remove('hidden');
+    if (STATE.wonContract) {
+      document.getElementById('manage-contract-name').textContent = STATE.wonContract.name;
+    }
+  }
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function markStepDone(step) {
+  const num = document.getElementById('num-' + step);
+  const tab = document.querySelector(`[data-step="${step}"]`);
+  if (num) num.textContent = '✓';
+  if (tab) tab.classList.add('done');
+}
+
+/* ══ CONTRACTS / FIND ══ */
+function loadContracts() {
+  renderContracts(STATE.filterNAICS);
+}
+
+function filterContracts(naics, btn) {
+  STATE.filterNAICS = naics;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderContracts(naics);
+}
+
+function renderContracts(filter) {
+  const grid = document.getElementById('contractGrid');
+  const list = filter === 'all' ? CONTRACTS : CONTRACTS.filter(c => c.naics === filter);
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">📋</div>No contracts found for this NAICS code right now.<br><span style="font-size:12px">OpenClaw scans every 2 hours.</span></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(c => {
+    const urgency = c.daysLeft <= 7 ? 'due-urgent' : c.daysLeft <= 21 ? 'due-soon' : '';
+    const urgencyLabel = c.daysLeft <= 7 ? '🔴' : c.daysLeft <= 21 ? '🟡' : '🟢';
+    return `
+    <div class="contract-card">
+      <div class="contract-top">
+        <div class="contract-agency">${urgencyLabel} ${c.agency}</div>
+        <div class="contract-name">${c.name}</div>
+        <div class="contract-tags">
+          <span class="tag tag-naics">${c.naics}</span>
+          <span class="tag tag-setaside">${c.setAside}</span>
+          <span class="tag tag-value">${c.estimatedValue}</span>
+          <span class="tag tag-distance">📍 ${c.distance}</span>
+        </div>
+        <div class="contract-meta">
+          <div class="meta-item">
+            <span class="meta-label">Due Date</span>
+            <span class="meta-val ${urgency}">${formatDate(c.due)} (${c.daysLeft}d)</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Solicitation</span>
+            <span class="meta-val" style="font-size:11px">${c.solNum}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">CO</span>
+            <span class="meta-val" style="font-size:12px">${c.co}</span>
+          </div>
+        </div>
+      </div>
+      <div class="contract-bottom">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-light)">State: ${c.state}</div>
+        <button class="btn btn-gold btn-sm" onclick="selectContract('${c.id}')">Price This →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function selectContract(id) {
+  STATE.activeContract = CONTRACTS.find(c => c.id === id);
+  markStepDone('find');
+  goStep('price');
+}
+
+function formatDate(d) {
+  const date = new Date(d + 'T00:00:00');
+  return date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+}
+
+/* ══ PRICE STEP ══ */
+function populatePriceStep() {
+  const c = STATE.activeContract;
+  document.getElementById('p-name').value = c.name;
+  // match NAICS
+  const sel = document.getElementById('p-naics');
+  [...sel.options].forEach(o => { if(o.value === c.naics) o.selected = true; });
+  // match state
+  const ssel = document.getElementById('p-state');
+  [...ssel.options].forEach(o => { if(o.value === c.state) o.selected = true; });
+  updateWD();
+}
+
+function updateWD() {
+  const naics = document.getElementById('p-naics').value;
+  const state = document.getElementById('p-state').value;
+  const rate = (WD_RATES[naics] && WD_RATES[naics][state]) ? WD_RATES[naics][state] : 15.00;
+  document.getElementById('p-wd').value = rate.toFixed(2);
+  // FL notice
+  const fl = state === 'FL';
+  document.getElementById('fl-notice').classList.toggle('hidden', !fl);
+  document.getElementById('br-fl-row').style.display = fl ? 'flex' : 'none';
+  calcBidFloor();
+}
+
+function calcBidFloor() {
+  const wd = parseFloat(document.getElementById('p-wd').value) || 0;
+  const fringe = parseFloat(document.getElementById('p-fringe').value) || 0;
+  const hours = parseFloat(document.getElementById('p-hours').value) || 0;
+  const marginPct = parseFloat(document.getElementById('p-margin').value) || 25;
+  const state = document.getElementById('p-state').value;
+
+  const labor = wd * hours;
+  const fringeTotal = fringe * hours;
+  const totalLabor = labor + fringeTotal;
+  const marginAmt = totalLabor / (1 - marginPct/100) - totalLabor;
+  let floor = totalLabor + marginAmt;
+  const flFee = state === 'FL' ? floor * 0.01 : 0;
+  floor += flFee;
+
+  STATE.bidFloor = floor;
+
+  document.getElementById('br-labor').textContent = fmt(labor);
+  document.getElementById('br-fringe').textContent = fmt(fringeTotal);
+  document.getElementById('br-total-labor').textContent = fmt(totalLabor);
+  document.getElementById('br-margin-pct').textContent = marginPct;
+  document.getElementById('br-margin').textContent = fmt(marginAmt);
+  document.getElementById('br-fl').textContent = fmt(flFee);
+  document.getElementById('br-floor').textContent = fmt(floor);
+  document.getElementById('floor-total').textContent = fmt(floor);
+  document.getElementById('floor-monthly').textContent = `${fmt(floor/12)} / month · ${fmt(floor/52)} / week`;
+}
+
+function fmt(n) {
+  return '$' + Math.round(n).toLocaleString();
+}
+
+/* ══ BID STEP ══ */
+async function generateBid() {
+  if (!STATE.activeContract) { alert('Select a contract first.'); return; }
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Generating...';
+
+  const c = STATE.activeContract;
+  const floor = fmt(STATE.bidFloor);
+
+  const sections = [
+    {id:'co-email', label:'CO Introductory Email', prompt:`Write a professional, concise federal contracting introductory email from Ironstone Services LLC to the contracting officer for this opportunity. Company: ${COMPANY.name}, UEI: ${COMPANY.uei}, CAGE: ${COMPANY.cage}, SAM Active ${COMPANY.samStatus}. Address: ${COMPANY.address}. CO: ${c.co}, email: ${c.coEmail || '[CO email]'}. Contract: "${c.name}", Solicitation: ${c.solNum}, NAICS: ${c.naics}, Set-Aside: ${c.setAside}, Due: ${c.due}. Bid floor: ${floor}. Keep it under 200 words. Professional. No fluff.`},
+    {id:'tech-approach', label:'Technical Approach', prompt:`Write a technical approach section for a federal bid. Company: Ironstone Services LLC (prime contractor, paper prime model). Contract: "${c.name}", NAICS: ${c.naics}, State: ${c.state}. We use vetted local subcontractors for execution. Cover: staffing, quality control, SOW compliance, SCA wage compliance, reporting. 3-5 short paragraphs, professional tone.`},
+    {id:'price-schedule', label:'Price Schedule', prompt:`Create a simple price schedule table (as formatted text, not HTML) for a federal bid. Contract: "${c.name}". Bid Floor: ${floor}/year. Show: Base Year, Option Year 1, Option Year 2, Option Year 3, Option Year 4, Total 5-Year Value. Apply 2% escalation per option year. Include CLIN 0001 base services. Clean, professional format.`},
+    {id:'past-perf', label:'Past Performance Summary', prompt:`Write a past performance summary for a federal bid. Company: Ironstone Services LLC. We are a new company with principals having facility services management experience. Brett Manning has 17+ years experience in facilities management including work at major Orlando hospitality venues. Baxter Smith manages field operations and subcontractor networks in Georgia. For NAICS ${c.naics} in ${c.state}. Keep it honest and professional — frame experience accurately for a new SAM-registered company.`},
+    {id:'capability', label:'Capability Statement', prompt:`Write a capability statement for: ${COMPANY.name}. UEI: ${COMPANY.uei}. CAGE: ${COMPANY.cage}. SAM Active. Address: ${COMPANY.address}. Website: ${COMPANY.website}. Principals: ${COMPANY.principals}. Core NAICS: ${COMPANY.naics.join(', ')}. Business model: federal prime contractor deploying vetted local subcontractors. Target geography: GA, FL, TN, SC. Differentiators: local sub bench, SCA-compliant payroll, CO relationship focus. Keep it to one tight page (4-5 paragraphs).`}
+  ];
+
+  // Generate each section via AI
+  for (const sec of sections) {
+    const el = document.getElementById(sec.id);
+    el.classList.add('generating');
+    el.innerHTML = `<span class="generating-dots">Generating ${sec.label}</span>`;
+
+    try {
+      const resp = await fetch('https://sam-proxy.ironstoneservicesllc.workers.dev/anthropic', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-6',
+          max_tokens:800,
+          messages:[{role:'user',content:sec.prompt}]
+        })
+      });
+      if (!resp.ok) throw new Error('API error');
+      const data = await resp.json();
+      const text = data.content?.map(b => b.text||'').join('') || 'Error generating section.';
+      STATE.generatedBid[sec.id] = text;
+      el.classList.remove('generating');
+      el.textContent = text;
+    } catch(e) {
+      el.classList.remove('generating');
+      el.textContent = `[Generation failed — check proxy connection. Error: ${e.message}]`;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = '⚡ Regenerate';
+  markStepDone('bid');
+}
+
+function copySection(id, btn) {
+  const text = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function exportBid() {
+  const sections = ['co-email','tech-approach','price-schedule','past-perf','capability'];
+  const labels = ['CO EMAIL','TECHNICAL APPROACH','PRICE SCHEDULE','PAST PERFORMANCE','CAPABILITY STATEMENT'];
+  let out = `IRONGATE OS — BID PACKAGE EXPORT\n${STATE.activeContract?.name || ''}\nGenerated: ${new Date().toLocaleDateString()}\n${'='.repeat(60)}\n\n`;
+  sections.forEach((id,i) => {
+    out += `\n${labels[i]}\n${'-'.repeat(40)}\n${STATE.generatedBid[id] || document.getElementById(id).textContent}\n`;
+  });
+  const blob = new Blob([out], {type:'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href=url; a.download='irongate-bid-package.txt'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ══ WIN STEP ══ */
+function markWon() {
+  const value = document.getElementById('w-value').value;
+  const co = document.getElementById('w-co').value;
+  if (!value) { alert('Enter the award value to mark as won.'); return; }
+
+  STATE.contractWon = true;
+  STATE.wonContract = STATE.activeContract;
+  STATE.wonValue = parseFloat(value);
+
+  // Unlock MANAGE tab
+  const manageTab = document.getElementById('tab-manage');
+  manageTab.classList.remove('locked');
+  document.getElementById('lock-icon').style.display = 'none';
+
+  // Mark steps done
+  markStepDone('win');
+  ['find','price','bid','win'].forEach(markStepDone);
+
+  // Show celebration
+  document.getElementById('win-form').classList.add('hidden');
+  document.getElementById('win-celebration').classList.remove('hidden');
+  document.getElementById('cel-sub').textContent = `${STATE.wonContract?.name} — Award Value: $${parseInt(value).toLocaleString()}. MANAGE is now unlocked.`;
+}
+
+/* ══ MANAGE ══ */
+const CHECKLIST_ITEMS = {
+  '561720': ['Pre-service safety walkthrough complete','Cleaning supplies stocked and inspected','All required areas serviced per SOW','Restrooms sanitized to spec','Photo documentation uploaded','Supervisor sign-off received'],
+  '561730': ['Pre-service equipment inspection','Grass height within NCA standard (≤3")','18" headstone clearance maintained','Flag/decoration preservation confirmed','Debris removed from all areas','CO notification sent for weather holds'],
+  '561740': ['Pre-treatment walkthrough complete','Carpet area measurements confirmed','Cleaning solution approved for facility type','Traffic lanes protected during drying','Post-clean inspection sign-off','Square footage documented for invoice'],
+  '561990': ['SOW task list reviewed pre-service','Worker age/eligibility verified','Required certifications current','Work order completed and signed','Sub invoice matches work order','CO report submitted on schedule'],
+};
+
+function buildChecklist() {
+  const naics = STATE.activeContract?.naics || '561720';
+  const items = CHECKLIST_ITEMS[naics] || CHECKLIST_ITEMS['561720'];
+  const body = document.getElementById('checklist-body');
+  body.innerHTML = items.map((item, i) => `
+    <div class="task-row">
+      <div class="task-check" id="chk-${i}" onclick="toggleCheck(${i})"></div>
+      <span class="task-label" id="lbl-${i}">${item}</span>
+    </div>`).join('');
+}
+
+function toggleCheck(i) {
+  STATE.checklistItems[i] = !STATE.checklistItems[i];
+  const chk = document.getElementById(`chk-${i}`);
+  const lbl = document.getElementById(`lbl-${i}`);
+  chk.classList.toggle('checked', STATE.checklistItems[i]);
+  chk.textContent = STATE.checklistItems[i] ? '✓' : '';
+  lbl.classList.toggle('done', STATE.checklistItems[i]);
+}
+
+async function generateCOReport() {
+  if (!STATE.wonContract) return;
+  const prompt = `Generate a brief monthly CO performance report for: ${STATE.wonContract.name}. Contractor: Ironstone Services LLC, UEI: SPKKEMJHT2Y5. Period: June 2026. Services performed on schedule. 12 site visits completed. 0 incidents. All SOW requirements met. SCA-compliant payroll maintained. Professional federal contractor tone. Keep under 200 words.`;
+  try {
+    const resp = await fetch('https://sam-proxy.ironstoneservicesllc.workers.dev/anthropic', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6',max_tokens:400,messages:[{role:'user',content:prompt}]})
+    });
+    const data = await resp.json();
+    const text = data.content?.map(b=>b.text||'').join('') || 'Error generating report.';
+    const blob = new Blob([text],{type:'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='co-report-june2026.txt'; a.click();
+  } catch(e) { alert('Could not generate report: ' + e.message); }
+}
+</script>
+</body>
+</html>
