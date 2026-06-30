@@ -1,7 +1,6 @@
 {
-  "generated": "2026-06-30T03:50:05.510Z",
-  "count": 8,
-  "source": "Gmail SAM Alert Parser + OpenClaw",
+  "generated": "2026-06-30T03:50:08.008Z",
+  "count": 6,
   "opportunities": [
     {
       "id": "12444026Q0100",
@@ -104,28 +103,6 @@
       "coEmail": "weston.worsham@va.gov",
       "defaultHours": 3640,
       "samUrl": "https://sam.gov/opp/36C78622N0408/view"
-    },
-    {
-      "id": "unknown-0",
-      "source": "gmail-sam-alert",
-      "searchName": "Janitorial GA TSB",
-      "samUrl": "https://sam.gov/search/results?preference_id=4180eca3-dc76-4f93-829e-0543a3ad633e&index=opp&last_notified_date=06/26/2026",
-      "foundDate": "Sun, 28 Jun 2026 05:35:03 -0400 (EDT)",
-      "naics": "561720",
-      "state": "GA",
-      "name": "[Review Required] Janitorial GA TSB",
-      "needsReview": true
-    },
-    {
-      "id": "unknown-1",
-      "source": "gmail-sam-alert",
-      "searchName": "Janitorial GA TSB",
-      "samUrl": "https://sam.gov/search/results?preference_id=4180eca3-dc76-4f93-829e-0543a3ad633e&index=opp",
-      "foundDate": "Sun, 28 Jun 2026 05:35:03 -0400 (EDT)",
-      "naics": "561720",
-      "state": "GA",
-      "name": "[Review Required] Janitorial GA TSB",
-      "needsReview": true
     }
   ]
 }
